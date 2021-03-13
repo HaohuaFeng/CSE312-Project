@@ -1,0 +1,28 @@
+.header {
+    width: auto;
+    height: auto;
+    border: 1px solid;
+}
+.header span {
+    display: inline-block;
+    height: auto;
+    min-width: 100px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+}
+.span_content div {
+    height: auto;
+    width: auto;
+    border: 1px dashed;
+    display: none;
+    line-height: 100px;
+    font-size: 20px;
+}
+div.display {
+    display: block;
+}
+
+.select_color {
+    background-color: orange;
+}
