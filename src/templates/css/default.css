@@ -1,22 +1,25 @@
-.header {
-    width: auto;
-    height: auto;
-    border: 1px solid;
-}
+/*.header {*/
+/*    width: auto;*/
+/*    height: auto;*/
+/*    border: 2px solid;*/
+/*}*/
+
 .header span {
+    border: 1px solid;
+    border-bottom: transparent;
     display: inline-block;
     height: auto;
-    min-width: 100px;
+    min-width: 150px;
     text-align: center;
-    line-height: 40px;
+    line-height: 50px;
     font-size: 20px;
 }
 .span_content div {
+    border: 1px dashed;
     height: auto;
     width: auto;
-    border: 1px dashed;
     display: none;
-    line-height: 100px;
+    line-height: 40px;
     font-size: 20px;
 }
 div.display {
