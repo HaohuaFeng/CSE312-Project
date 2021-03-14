@@ -23,32 +23,32 @@ app.secret_key = b'fjasldf;jlasfj#jfadlDJL23@ljfasljAi'
 @app.route('/')
 def hello_world():
     # test image
-    fp = open("images/1.jpg",'rb')
-    img = fp.read()
-    print(img)
-    fp.close()
-    sql = "insert into images values (%s,%s);"
-    args = ("1.jpg",img)
-    cur.execute(sql,args)
-    db.commit()
+#     fp = open("images/1.jpg",'rb')
+#     img = fp.read()
+#     print(img)
+#     fp.close()
+#     sql = "insert into images values (%s,%s);"
+#     args = ("1.jpg",img)
+#     cur.execute(sql,args)
+#     db.commit()
 
     if 'username' in session:
         return "logged in as %s " % escape(session['username'])
     return "please logged in!"
 
 
-@app.route('/images/<names>')
-def index(names=None):
-    sql = "select * from images where nm = %s"
+# @app.route('/images/<names>')
+# def index(names=None):
+#     sql = "select * from images where nm = %s"
 
-    cur.execute(sql,names)
+#     cur.execute(sql,names)
 
-    name = cur.fetchone()
-    print("AAAAAAAAAAAAAAAAAAaa")
-    print(name['img'])
-    print(name['nm'])
+#     name = cur.fetchone()
+#     print("AAAAAAAAAAAAAAAAAAaa")
+#     print(name['img'])
+#     print(name['nm'])
 
-    return send_file("images/"+name['nm'])
+#     return send_file("images/"+name['nm'])
 
 #https://dormousehole.readthedocs.io/en/latest/quickstart.html#quickstart
 @app.route('/login', methods=['POST','GET'])
