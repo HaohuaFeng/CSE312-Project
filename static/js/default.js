@@ -1,24 +1,36 @@
 window.onload = function(){
-    const spans = document.getElementsByTagName("span");
-    const spans_content = document.getElementsByClassName("span_content")[0].getElementsByTagName("div")
-    let current_tab_index = 0
+
+    const fake_user_list = {'a': 'Jimmy', 'b': 'Tonny', 'c': 'Haohua', 'd' : "none"};
+
+    function generate_online_user_list(user) {
+        const list = document.createElement('ul')
+        for(let i = 0; i < Object.keys(user).length; i++) {
+            const item = document.createElement('li')
+            const avatar = document.createElement('img');
+            const url = document.createElement('a')
+            url.href = "https://www.google.com/"
+            url.target = "_blank"
+            avatar.src = "../images/avatar/fakeuser.png"
+            avatar.alt = ""
+            url.appendChild(avatar)
+            url.appendChild(document.createTextNode(Object.values(user)[i]))
+            item.appendChild(url)
+            list.appendChild(item)
+        }
+        return list
+    }
+    document.getElementsByClassName("online_user")[0].appendChild(generate_online_user_list(fake_user_list))
+    const spans = document.getElementsByTagName("span")
     for (let i = 0; i < spans.length; i++) {
-        spans[i].index = i;
-        spans[i].onclick = function (){
-            for (let j = 0; j < spans.length; j++) {
-                spans[j].className = "";
-                spans_content[j].className = "";
+        spans[i].onclick = function () {
+            if (this.id === "home") {
+                window.location.href = 'default.html'
             }
-            current_tab_index = i
-            this.className = "select_color";
-            spans_content[this.index].className = "display";
-        }
-        spans[i].onmouseenter = function (){
-            this.className = "select_color";
-        }
-        spans[i].onmouseleave = function (){
-            if (this.index !== current_tab_index){
-                this.className = ""
+            else if (this.id === "login") {
+                window.location.href = 'new_login.html'
+            }
+            else if(this.id === "register") {
+                window.location.href = 'new_register.html'
             }
         }
     }
