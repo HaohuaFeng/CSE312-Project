@@ -6,7 +6,7 @@ import hashlib
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等 db = pymysql.connect(host='db',user='root',password=os.getenv(
 # 'MYSQL_PASSWORD'),db='zhong',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(db="userdb", host='localhost',user='root', password="Hbcheng?51",charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(db="userdb", host='localhost',user='root', password="",charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
 
 
 cur = db.cursor()
