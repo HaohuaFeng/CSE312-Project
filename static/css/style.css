@@ -1,0 +1,164 @@
+.header a{
+    border: 1px solid;
+    display: inline-block;
+    min-width: 150px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    border: 1px solid black;
+    margin: 20px 2px;
+}
+
+#select_color {
+    color: white;
+    background-color: orange;
+}
+
+.profile:link {
+    font-size: 25px;
+    color: blue;
+    background-color: Azure;
+    text-decoration: underline;
+}
+
+.profile:hover {
+    color: while;
+    background-color: orange;
+}
+
+.header a:hover{
+    color: white;
+    background-color: orange;
+}
+
+.main {
+    font-size: 20px;
+}
+
+.description {
+    line-height: 50px;
+    font-size: 30px;
+    padding: 20px 10px;
+}
+
+.login form, .register form, .sub_blog, .update_profile{
+    padding: 20px 20px;
+    font-size: 25px;
+}
+input{
+  width: 300px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+input[type=submit]{
+  width: 150px;
+  margin: 8px 200px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 20px;
+}
+input[type=reset]{
+  width: 150px;
+  margin: 8px 100px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 20px;
+}
+input[type=radio]{
+  width: 100px;
+  padding: 0;
+  font-size: 20px;
+}
+textarea {
+    font-size: 25px;
+    color: green;
+    width: 90%;
+}
+
+input[type=submit]:hover{
+  color: white;
+  background-color: orange;
+}
+input[type=reset]:hover{
+  color: white;
+  background-color: orange;
+}
+
+.casualCase {
+    line-height: 30px;
+    font-size: 20px;
+    padding: 0px 10px;
+}
+
+.casualCase a{
+    text-decoration: underline;
+    color: blue;
+}
+.casualCase a:hover{
+    font-size: 25px;
+    color: white;
+    background-color: orange;
+    text-decoration: none;
+}
+
+.left_col {
+    width: 25%;
+    float: left;
+    padding: 10px 10px;
+}
+
+.right_col {
+    width: 65%;
+    float: right;
+    padding: 10px 10px;
+}
+
+.send_blog, .view_blog, .online_user{
+    border: 2px solid red;
+    border-radius: 20px;
+    box-shadow: 2px 5px 10px pink;
+}
+
+.send_blog h2, .view_blog h2, .online_user h2{
+    text-align: center;
+}
+
+.history {
+    border: 1px solid blue;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px green;
+    padding: 10px 10px;
+    margin: 10px 5px;
+}
+.row {
+    border: 1px red solid;
+    margin: 10px;
+}
+.column {
+    border: 1px red solid;
+    float: left;
+    padding: 10px;
+}
+.column.side {
+    width: 500px;
+    margin-right: 20px;
+}
+.column.middle {
+    300px;
+}
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#pic {
+    border: 1px blue solid;
+}
+.bot_profile {
+    padding: 10px;
+    border: 1px red solid;
+    margin: 10px;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/default.js"></script>
+</head>
+
+<body>
+    <h1>Project Name</h1>
+
+    <div class="header">
+        <a href="index.html" >Home</a>
+        <a href="about.html" id="select_color" >About</a>
+        <a href="register.html" >Register</a>
+        {% if user %}
+        <a href="profile.html" class="profile">{{user}}</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="login.html">Login</a>
+        {% endif %}
+    </div>
+    <div class="main">
+        <div class="description">This is About Us Page</div>
+        <hr>
+        <div class="about">
+            <ul>
+                <li>Zhongai Shi</li>
+                <li>Zhongen Shi</li>
+                <li>Haohua Feng</li>
+                <li>Baicheng Huang</li>
+            </ul>
+        </div>
+
+    </div>
+
+</body>
+</html>

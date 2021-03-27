@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/default.js"></script>
+</head>
+<body>
+    <h1>Project Name</h1>
+
+    {% if user %}
+    <div class="header">
+        <a href="index.html" >Home</a>
+        <a href="about.html" >About</a>
+        <a href="register.html">Register</a>
+        <a href="profile.html" class="profile" id="select_color" >{{user['username']}}</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="main">
+        <div class="description">This is User's Profile Page</div>
+        <hr>
+        <h2>Welcome <a href="profile.html" class="profile">{{user['username']}}</a>.</h2>
+        <form method="post" enctype="multipart/form-data" class="update_profile">
+           <div class="row">
+               <div class="column side">
+                   <label for="email">Email :</label>
+                   <input id="email" type="text" name="email" value ="{{user['email']}}" required>
+                   <br/>
+                   <label>Gender :</label><br>
+                   <input type="radio" name="gender" value="Male" id="male" {{check_male}}>
+                   <label for="male">Male</label><br>
+                   <input type="radio" name="gender" value="Female" id="female" {{check_female}}>
+                   <label for="female">Female</label><br>
+                   <input type="radio" name="gender" value="N/A" id="na" {{check_NA}}>
+                   <label for="na">N/A</label><br>
+
+                   <br/>
+                   <label for="birth">Date of Birth:</label>
+                   <input id="birth" type="date" name="birth" value="{{user['birth']}}" required>
+                   <br/>
+                   <label for="personal_page">Personal Page:</label>
+                   <input id="personal_page" type="text" name="personal_page" value="{{user['personal_page']}}" required>
+               </div>
+               <div class="column middle">
+                   <label for="icon">User Picture</label><br>
+                   <label for="icon">
+                       <img src="static/images/{{user['icon']}}" id="pic"/></label><br>
+                   <input id="icon" type="file" name="icon" required>
+               </div>
+           </div>
+           <div class="bot_profile">
+               <label for="introduction">Introduction </label><br/>
+               <textarea id="introduction"  name="introduction" rows="10" required>{{user['introduction']}}</textarea>
+               <input type="submit" value="Submit">
+               <input type="reset">
+           </div>
+        </form>
+    </div>
+    
+{% endif %}
+
+
+
+</body>
+</html>

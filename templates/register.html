@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/default.js"></script>
+</head>
+
+<body>
+    <h1>Project Name</h1>
+
+    <div class="header">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html" id="select_color">Register</a>
+        {% if user %}
+        <a href="profile.html" class="profile">{{user}}</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="login.html">Login</a>
+        {% endif %}
+    </div>
+    <div class="main">
+        <div class="description">This is Register Page</div>
+        <hr>
+        <div class="register">
+            <form method="post">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required><br>
+                <label for="email">E-mail :</label>
+                <input type="email" name="email" id="email" required><br>
+                <label for="password">Password :</label>
+                <input type="password" name="password" id="password" required><br>
+                <label for="pcheck">Confirm Password: </label>
+                <input type="password" name="pcheck" id="pcheck" required><br>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+        <p class="casualCase">I have an account. <a href="/login.html">Login</a>.</p>
+    </div>
+
+</body>
+</html>

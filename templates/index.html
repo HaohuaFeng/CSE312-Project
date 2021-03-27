@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/default.js"></script>
+</head>
+
+<body>
+    <h1>Project Name</h1>
+
+    <div class="header">
+        <a href="index.html" id="select_color">Home</a>
+        <a href="about.html" >About</a>
+        <a href="register.html" >Register</a>
+        {% if user %}
+        <a href="profile.html" class="profile">{{user}}</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="login.html">Login</a>
+        {% endif %}
+    </div>
+    <div class="main">
+        <div class="description">This is Homepage</div>
+        <hr>
+        <div class="left_col">
+            <div class="online_user">
+                <h2>Online Users:</h2>
+                {% for user in users %}
+                    <a href="direct_chat"><img src="static/images/icon/{{user['img_user']}}">{{user['user_name']}}</a>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="right_col">
+            <div class="send_blog">
+                {% if user %}
+                <h2>Welcome <a href="profile.html" class="profile">{{user}}</a>，share your great moment!</h2>
+                <hr>
+                <form method="post" enctype="multipart/form-data" class="sub_blog">
+                   <label for="form-file">Image: </label>
+                   <input id="form-file" type="file" name="upload">
+                   <br/>
+                   <label for="comment">Comment: </label><br/>
+                   <textarea id="comment"  name="comment" rows="10" required>Write some comment ...</textarea>
+                   <input type="submit" value="Submit">
+                </form>
+
+                {% else %}
+                You are not logged yet，<a href="login.html">Please login first</a>
+                {% endif %}
+            </div>
+                <br/><br/>
+            <div class="view_blog">
+                <h2>Shared moments!</h2>
+                <hr>
+                {% for blog in blogs %}
+                <div class="history">
+                    <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
+                    <p>{{blog['upvote']}} people think this post is good. {{blog['downvote']}} don't like it.</p>
+                    <p>There are {{blog['response']}} responses. </p>
+                    <hr>
+                    {% if blog['image'] %}
+                    <img src="static/images/{{blog['image']}}"><br/>
+                    {% endif %}
+                    <p>Description: {{blog['comment']}}</p><br/>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
