@@ -3,23 +3,29 @@ from werkzeug.utils import redirect, escape
 import pymysql
 import os
 import hashlib
-#导入时间lib
+# 导入时间lib
 from datetime import datetime
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
-db = pymysql.connect(host='db',user='root',password=os.getenv(
-'MYSQL_PASSWORD'),db='zhong',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
-#db = pymysql.connect(host='localhost', user='root',  charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='db', user='root', password=os.getenv(
+#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password="123456789", charset='utf8mb4',
+                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
-# cur.execute("create database IF NOT EXISTS zhong")
-# cur.execute("use zhong")
-cur.execute("create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(300),icon varchar(200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction varchar(500));")
-cur.execute("create table IF NOT EXISTS blog(image varchar(200), comment varchar(500), username varchar(200), date varchar(20), upvote int, downvote int, response int);")
+cur.execute("create database IF NOT EXISTS zhong")
+cur.execute("use zhong")
+cur.execute(
+    "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(300),icon varchar("
+    "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
+    "varchar(500));")
+cur.execute(
+    "create table IF NOT EXISTS blog(image varchar(200), comment varchar(500), username varchar(200), date varchar("
+    "20), upvote int, downvote int, response int);")
+cur.execute("create table IF not EXISTS online_status(username varchar(200), online boolean default False);")
 cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
 cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
 db.commit()
-
 
 app = Flask(__name__)
 app.secret_key = b'fjasldf;jlasfj#jfadlDJL23@ljfasljAi'
@@ -40,23 +46,33 @@ def hello_world():
         date = now.strftime("%d/%m/%Y %H:%M:%S")
         if not image:
             sql = "insert into blog (comment,username,date,upvote,downvote,response)values (%s,%s,%s,%s,%s,%s)"
-            cur.execute(sql, (comment,username,date,0,0,0))
+            cur.execute(sql, (comment, username, date, 0, 0, 0))
             db.commit()
         else:
             img = image.read()
-            path = "static/images/"+image.filename
-            fout = open(path,'wb')
+            path = "static/images/" + image.filename
+            fout = open(path, 'wb')
             fout.write(img)
             fout.close()
             sql = "insert into blog values (%s,%s,%s,%s,%s,%s,%s)"
-            cur.execute(sql, (image.filename,comment,username,date,0,0,0))
+            cur.execute(sql, (image.filename, comment, username, date, 0, 0, 0))
             db.commit()
 
     sql2 = "select * from blog"
     cur.execute(sql2)
     blogs = cur.fetchall()
 
-    return render_template('index.html',user=username,blogs=blogs)
+    # show online user
+    if 'user' in session:
+        online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
+                 "WHERE online=%s AND online_status.username<>%s"
+        cur.execute(online, (True, session['user']))
+    else:
+        online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
+                 "WHERE online=%s"
+        cur.execute(online, True)
+    users = cur.fetchall()
+    return render_template('index.html', user=username, blogs=blogs, users=users)
 
 
 @app.route('/about.html')
@@ -81,9 +97,17 @@ def login():
         rd_suc = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirect + rd_fail
+        cur.execute("SELECT online FROM online_status WHERE username=%s", username)
+        online = cur.fetchall()
+        if online == 1:
+            rd_online = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+            return "<h1>User " + username + " is online<br>If you believe your password has been compromised, please " \
+                                            "change your password</h1>" + redirect + rd_online
         h = hashlib.sha256(password.encode())
         if name['password'] == h.hexdigest():
             session['user'] = username
+            cur.execute("UPDATE online_status SET online=%s WHERE username=%s", (True, username))
+            db.commit()
             return "<h1>成功登入，欢迎回来： " + username + "</h1>" + redirect + rd_suc
         else:
             return "<h1>登入失败, 用户：" + username + " 密码错误</h1>" + redirect + rd_fail
@@ -123,6 +147,8 @@ def forgot():
 
 @app.route('/logout')
 def logout():
+    cur.execute("UPDATE online_status SET online=%s WHERE username=%s", (False, session['user']))
+    db.commit()
     session.pop('user', None)
     redirect = '<h3>Redirecting ... </h3>'
     rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
@@ -137,7 +163,6 @@ def register():
         password = request.form['password']
         password_check = request.form['pcheck']
         h = hashlib.sha256(password.encode())
-
         # 一些判断语句，比如输入空白提示，2次密码不同提示，用户名重复提示等等
         sql = "select * from user where username = (%s)"
         cur.execute(sql, username)
@@ -157,6 +182,10 @@ def register():
         # 新用户添加到database
         sql = "insert into user(username,email,password) values (%s,%s,%s)"
         cur.execute(sql, (username, email, h.hexdigest()))
+
+        # insert online status
+        online = "insert into online_status(username) value(%s)"
+        cur.execute(online, username)
         db.commit()
         if 'user' in session:
             return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc2
@@ -216,6 +245,7 @@ def resetpassword():
 
     return render_template('profile.html')
 
+
 @app.route('/profile', methods=['POST', 'GET'])
 @app.route('/profile.html', methods=['POST', 'GET'])
 def profile():
@@ -231,9 +261,9 @@ def profile():
         fout = open(path, 'wb')
         fout.write(ic)
         fout.close()
-        print(email+" "+gender+" "+birth+" "+pp+" "+introduction+" "+icon.filename)
+        print(email + " " + gender + " " + birth + " " + pp + " " + introduction + " " + icon.filename)
         sql = "update user set email=%s,icon=%s,gender=%s,birth=%s,personal_page=%s,introduction=%s where username=%s"
-        cur.execute(sql,(email,icon.filename,gender,birth,pp,introduction,session['user']))
+        cur.execute(sql, (email, icon.filename, gender, birth, pp, introduction, session['user']))
         db.commit()
 
     if 'user' in session:
@@ -246,14 +276,15 @@ def profile():
             gender = user['gender']
 
         if gender == "Male":
-            return render_template('profile.html',user=user, check_male='checked')
+            return render_template('profile.html', user=user, check_male='checked')
         elif gender == "Female":
-            return render_template('profile.html',user=user, check_female='checked')
+            return render_template('profile.html', user=user, check_female='checked')
         elif gender == "N/A":
-            return render_template('profile.html',user=user, check_NA='checked')
-        return render_template('profile.html',user=user)
+            return render_template('profile.html', user=user, check_NA='checked')
+        return render_template('profile.html', user=user)
 
     return "Please login first."
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)

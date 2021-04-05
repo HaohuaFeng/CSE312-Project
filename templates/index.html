@@ -29,10 +29,9 @@
             <div class="online_user">
                 <h2>Online Users:</h2>
                 {% for user in users %}
-                    <a href="direct_chat"><img src="static/images/icon/{{user['img_user']}}">{{user['user_name']}}</a>
+                    <a href="direct_chat"><img src="static/images/icon/{{user['img_user']}}">{{user['username']}}</a>
                 {% endfor %}
             </div>
-
         </div>
         <div class="right_col">
             <div class="send_blog">
