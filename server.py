@@ -11,7 +11,7 @@ import base64
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(host='localhost', user='root', password="sze111", charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -31,7 +31,7 @@ db.commit()
 app = Flask(__name__)
 app.secret_key = b'fjasldf;jlasfj#jfadlDJL23@ljfasljAi'
 app.config['SECRET_KEY'] = 'mysecret'
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -88,8 +88,6 @@ def display(message):
     cur.execute(sql, (image_filename, comment, username, date))
     db.commit()
 
-    cur.execute("select * from blog")
-    blogs = cur.fetchall()
 
     if 'user' in session:
         online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
@@ -99,7 +97,7 @@ def display(message):
         online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
                  "WHERE online=%s"
         cur.execute(online, True)
-    users = cur.fetchall()
+    #online users no complete yet.
     emit('blog_done', {'user': username, 'date': date, 'comment': comment, 'image': image_filename}, broadcast=True)
 
 
@@ -110,7 +108,6 @@ def about():
     return render_template('about.html')
 
 
-# https://dormousehole.readthedocs.io/en/latest/quickstart.html#quickstart
 @app.route('/login.html', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -313,16 +310,29 @@ def profile():
 
     return "Please login first."
 
-@app.route('/direct_chat')
-def directChat():
+@app.route('/direct_chat/<send_to_user>')
+def directChat(send_to_user):
+    if 'user' in session:
+        sender = session['user']
+        return render_template("direct_chat.html",sender=sender,send_to=send_to_user)
+    else:
+        return "Please log in"
 
-
-    return render_template('direct_chat.html')
-
-@socketio.on('message', namespace='/direct_chat')
+@socketio.on('message',namespace='/direct_chat')
 def handleMessage(msg):
     print("message: " + msg)
     send(msg,broadcast=True)
+
+@app.route('/user_profile/<look_user>')
+def userProfile(look_user):
+    sql = "select * from user where username = (%s)"
+    cur.execute(sql, look_user)
+    look_user = cur.fetchone()
+    if 'user' in session:
+        user = session['user']
+        return render_template("user_profile.html",user=user,look_user=look_user)
+    else:
+        return render_template("user_profile.html",look_user=look_user)
 
 
 if __name__ == "__main__":
