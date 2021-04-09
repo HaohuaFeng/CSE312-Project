@@ -33,7 +33,7 @@
                 <h2>Online Users:</h2>
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="direct_chat">{{user['username']}}</a></br>
+                    <a href="user_profile/{{user['username']}}">{{user['username']}}</a></br>
                 {% endfor %}
             </div>
         </div>
@@ -65,7 +65,7 @@
                     <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
                     <hr>
                     {% if blog['image'] %}
-                    <img src="static/images/{{blog['image']}}"><br/>
+                    <img src="static/images/{{blog['image']}}" width="300"><br/>
                     {% endif %}
                     <p>Description: {{blog['comment']}}</p><br/>
                 </div>

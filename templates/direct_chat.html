@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/default.js"></script>
+</head>
+
+<body>
+    <h1>Project Name</h1>
+
+    <div class="header">
+        <a href="/index.html" id="select_color">Home</a>
+        <a href="/about.html" >About</a>
+        <a href="/register.html" >Register</a>
+        {% if sender %}
+        <a href="/profile.html" class="profile">{{sender}}</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login.html">Login</a>
+        {% endif %}
+    </div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
+<script
+              src="http://code.jquery.com/jquery-3.2.1.min.js"
+              integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+              crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+   var socket = io('/direct_chat');
+       socket.on('connect', function() {
+        socket.send('{{sender}} has connected!');
+       });
+       socket.on('message',function(msg) {
+        $("#messages").append('<li>'+msg+'</li>');
+        console.log('received message');
+        });
+        $('#sendbutton').on('click',function() {
+            socket.send('{{sender}} send to {{send_to}}:'+$('#myMessage').val());
+            $('#myMessage').val('');
+       });
+       });
+</script>
+<ul id="messages"></ul>
+    <input type="text" id="myMessage">
+    <button id="sendbutton">send</button>
+
+</body>
+</html>
