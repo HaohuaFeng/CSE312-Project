@@ -1,16 +1,17 @@
-from flask import Flask, render_template, request, session, url_for, escape, send_file
+from flask import Flask, render_template, request, session, url_for
 from werkzeug.utils import redirect, escape
 import pymysql
 import os
 import hashlib
 # 导入时间lib
 from datetime import datetime
-
+from flask_socketio import SocketIO, emit, send, join_room,leave_room
+import json
+import base64
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(host='localhost', user='root', password="123456789", charset='utf8mb4',
-                     cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password="sze111", charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -20,8 +21,8 @@ cur.execute(
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
     "varchar(500));")
 cur.execute(
-    "create table IF NOT EXISTS blog(image varchar(200), comment varchar(500), username varchar(200), date varchar("
-    "20), upvote int, downvote int, response int);")
+    "create table IF NOT EXISTS blog(image varchar(200), comment varchar(500), "
+    "username varchar(200), date varchar(20));")
 cur.execute("create table IF not EXISTS online_status(username varchar(200), online boolean default False);")
 cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
 cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
@@ -29,6 +30,8 @@ db.commit()
 
 app = Flask(__name__)
 app.secret_key = b'fjasldf;jlasfj#jfadlDJL23@ljfasljAi'
+app.config['SECRET_KEY'] = 'mysecret'
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -39,24 +42,6 @@ def hello_world():
         username = session['user']
     else:
         username = None
-    if request.method == "POST":
-        comment = request.form['comment']
-        image = request.files['upload']
-        now = datetime.now()
-        date = now.strftime("%d/%m/%Y %H:%M:%S")
-        if not image:
-            sql = "insert into blog (comment,username,date,upvote,downvote,response)values (%s,%s,%s,%s,%s,%s)"
-            cur.execute(sql, (comment, username, date, 0, 0, 0))
-            db.commit()
-        else:
-            img = image.read()
-            path = "static/images/" + image.filename
-            fout = open(path, 'wb')
-            fout.write(img)
-            fout.close()
-            sql = "insert into blog values (%s,%s,%s,%s,%s,%s,%s)"
-            cur.execute(sql, (image.filename, comment, username, date, 0, 0, 0))
-            db.commit()
 
     sql2 = "select * from blog"
     cur.execute(sql2)
@@ -73,6 +58,49 @@ def hello_world():
         cur.execute(online, True)
     users = cur.fetchall()
     return render_template('index.html', user=username, blogs=blogs, users=users)
+
+
+@socketio.on('send-message', namespace='/test')
+def display(message):
+    if 'user' in session:
+        username = session['user']
+    else:
+        username = None
+    comment = message['comment']
+    image_filename = ""
+    if 'image' in message.keys():
+        image = message['image']
+        image_index = image.find('base64,')
+        image_byte = base64.b64decode(image[image_index + len('base64,'):])
+
+        cur.execute("select * from blog")
+        num = len(cur.fetchall())
+
+        image_filename = "image" + str(num) + ".jpg"
+        with open("static/images/" + image_filename, "wb") as file:
+            file.write(image_byte)
+            file.close()
+
+    now = datetime.now()
+    date = now.strftime("%d/%m/%Y %H:%M:%S")
+
+    sql = "insert into blog values (%s,%s,%s,%s)"
+    cur.execute(sql, (image_filename, comment, username, date))
+    db.commit()
+
+    cur.execute("select * from blog")
+    blogs = cur.fetchall()
+
+    if 'user' in session:
+        online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
+                 "WHERE online=%s AND online_status.username<>%s"
+        cur.execute(online, (True, session['user']))
+    else:
+        online = "SELECT * FROM user INNER JOIN online_status ON user.username=online_status.username " \
+                 "WHERE online=%s"
+        cur.execute(online, True)
+    users = cur.fetchall()
+    emit('blog_done', {'user': username, 'date': date, 'comment': comment, 'image': image_filename}, broadcast=True)
 
 
 @app.route('/about.html')
@@ -285,6 +313,18 @@ def profile():
 
     return "Please login first."
 
+@app.route('/direct_chat')
+def directChat():
+
+
+    return render_template('direct_chat.html')
+
+@socketio.on('message', namespace='/direct_chat')
+def handleMessage(msg):
+    print("message: " + msg)
+    send(msg,broadcast=True)
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    # app.run(host='0.0.0.0', port=8000)
+    socketio.run(app, host='0.0.0.0', port=8000)
