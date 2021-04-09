@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <title>Project Name</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <script src="../static/js/default.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="../static/js/default2.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -29,7 +32,8 @@
             <div class="online_user">
                 <h2>Online Users:</h2>
                 {% for user in users %}
-                    <a href="direct_chat"><img src="static/images/icon/{{user['img_user']}}">{{user['username']}}</a>
+                    <img src="static/images/{{user['icon']}}" width=50/>
+                    <a href="direct_chat">{{user['username']}}</a></br>
                 {% endfor %}
             </div>
         </div>
@@ -38,28 +42,27 @@
                 {% if user %}
                 <h2>Welcome <a href="profile.html" class="profile">{{user}}</a>，share your great moment!</h2>
                 <hr>
-                <form method="post" enctype="multipart/form-data" class="sub_blog">
-                   <label for="form-file">Image: </label>
-                   <input id="form-file" type="file" name="upload">
-                   <br/>
-                   <label for="comment">Comment: </label><br/>
-                   <textarea id="comment"  name="comment" rows="10" required>Write some comment ...</textarea>
-                   <input type="submit" value="Submit">
-                </form>
+
+                <label for="form-file">Image: </label>
+                <input id="form-file" type="file" name="upload">
+                <br/>
+                <label for="comment">Comment: </label><br/>
+                <input id="comment"  name="comment" placeholder="Write some comment ..." required>
+                <button type="button" >Send</button>
 
                 {% else %}
                 You are not logged yet，<a href="login.html">Please login first</a>
                 {% endif %}
             </div>
                 <br/><br/>
+
             <div class="view_blog">
                 <h2>Shared moments!</h2>
+
                 <hr>
                 {% for blog in blogs %}
                 <div class="history">
                     <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
-                    <p>{{blog['upvote']}} people think this post is good. {{blog['downvote']}} don't like it.</p>
-                    <p>There are {{blog['response']}} responses. </p>
                     <hr>
                     {% if blog['image'] %}
                     <img src="static/images/{{blog['image']}}"><br/>
@@ -67,6 +70,7 @@
                     <p>Description: {{blog['comment']}}</p><br/>
                 </div>
                 {% endfor %}
+                <div id="chat"></div>
             </div>
         </div>
 
