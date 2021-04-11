@@ -64,8 +64,10 @@
                 <div class="history">
                     <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
                     <hr>
-                    {% if blog['image'] %}
-                    <img src="static/images/{{blog['image']}}" width="300"><br/>
+                    {% if blog['filename'] %}
+                    <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
+
+
                     {% endif %}
                     <p>Description: {{blog['comment']}}</p><br/>
                 </div>
