@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, session, url_for
-from werkzeug.utils import redirect, escape
+from flask import Flask, render_template, request, session
 import pymysql
 import os
 import hashlib
+import bcrypt
 # 导入时间lib
 from datetime import datetime
 from flask_socketio import SocketIO, emit, send, join_room,leave_room
@@ -17,11 +17,11 @@ cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
 cur.execute("use zhong")
 cur.execute(
-    "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(300),icon varchar("
+    "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(500),icon varchar("
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
     "varchar(500));")
 cur.execute(
-    "create table IF NOT EXISTS blog(image varchar(200), comment varchar(500), "
+    "create table IF NOT EXISTS blog(filename varchar(200), filetype varchar(50), comment varchar(500), "
     "username varchar(200), date varchar(20));")
 cur.execute("create table IF not EXISTS online_status(username varchar(200), online boolean default False);")
 cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
@@ -67,25 +67,25 @@ def display(message):
     else:
         username = None
     comment = message['comment']
-    image_filename = ""
-    if 'image' in message.keys():
-        image = message['image']
-        image_index = image.find('base64,')
-        image_byte = base64.b64decode(image[image_index + len('base64,'):])
 
-        cur.execute("select * from blog")
-        num = len(cur.fetchall())
+    file_name = ''
+    file_type = ''
+    if 'file' in message.keys():
+        file_name = message['filename']
+        file_type = message['filetype']
+        file = message['file']
+        file_index = file.find('base64,')
+        file_byte = base64.b64decode(file[file_index + len('base64,'):])
 
-        image_filename = "image" + str(num) + ".jpg"
-        with open("static/images/" + image_filename, "wb") as file:
-            file.write(image_byte)
-            file.close()
+        with open("static/images/" + file_name, "wb") as file2:
+            file2.write(file_byte)
+            file2.close()
 
     now = datetime.now()
     date = now.strftime("%d/%m/%Y %H:%M:%S")
 
-    sql = "insert into blog values (%s,%s,%s,%s)"
-    cur.execute(sql, (image_filename, comment, username, date))
+    sql = "insert into blog values (%s,%s,%s,%s,%s)"
+    cur.execute(sql, (file_name, file_type, comment, username, date))
     db.commit()
 
 
@@ -98,7 +98,7 @@ def display(message):
                  "WHERE online=%s"
         cur.execute(online, True)
     #online users no complete yet.
-    emit('blog_done', {'user': username, 'date': date, 'comment': comment, 'image': image_filename}, broadcast=True)
+    emit('blog_done', {'user': username, 'date': date, 'comment': comment, 'filename': file_name, 'filetype':file_type}, broadcast=True)
 
 
 @app.route('/about.html')
@@ -128,8 +128,8 @@ def login():
             rd_online = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
             return "<h1>User " + username + " is online<br>If you believe your password has been compromised, please " \
                                             "change your password</h1>" + redirect + rd_online
-        h = hashlib.sha256(password.encode())
-        if name['password'] == h.hexdigest():
+
+        if bcrypt.checkpw(password.encode(),name['password'].encode()):
             session['user'] = username
             cur.execute("UPDATE online_status SET online=%s WHERE username=%s", (True, username))
             db.commit()
@@ -139,6 +139,40 @@ def login():
     if 'user' in session:
         return render_template('login.html', user=session['user'])
     return render_template('login.html')
+
+@app.route('/reset.html', methods=['POST', 'GET'])
+def reset():
+    if request.method == 'POST':
+        username = request.form['username']
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        cnew_password = request.form['cnew_password']
+        sql = "select * from user where username = (%s)"
+        cur.execute(sql, username)
+        name = cur.fetchone()
+        redirect = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="reset.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        if name is None:
+            return "<h1>This username does not exist!</h1>" + redirect + rd_fail
+        if new_password != cnew_password:
+            return "<h1>The new passwords are not same!</h1>" + redirect + rd_fail
+
+        if bcrypt.checkpw(old_password.encode(),name['password'].encode()):
+            salt = bcrypt.gensalt()
+            h = new_password.encode()
+            hashed = bcrypt.hashpw(h, salt)
+            cur.execute("UPDATE user SET password=%s WHERE username=%s", (hashed, username))
+            db.commit()
+            session.pop('user', None)
+            return "<h1>The password is changed. Please login again.</h1>" + redirect + rd_suc
+        else:
+            return "<h1>The old password is incorrect. Please try again.</h1>" + redirect + rd_fail
+
+    if 'user' in session:
+        return render_template('reset.html', user=session['user'])
+    return render_template('reset.html')
+
 
 
 @app.route('/forgot.html', methods=['POST', 'GET'])
@@ -159,8 +193,10 @@ def forgot():
 
         if name['email'] == email:
             newpassword = 'abcd1234'
-            newpassword_hash = hashlib.sha256(newpassword.encode())
-            cur.execute("UPDATE user SET password=%s WHERE username=%s", (newpassword_hash.hexdigest(), username))
+            salt = bcrypt.gensalt()
+            h = newpassword.encode()
+            hashed = bcrypt.hashpw(h, salt)
+            cur.execute("UPDATE user SET password=%s WHERE username=%s", (hashed, username))
             db.commit()
             return "<h1>Hello, " + username + ", your new password is <span style='color:blue'>" + newpassword + \
                    "</span>. This password is not secure, please change it immediately.</h1>" + redirect + rd_suc
@@ -187,7 +223,7 @@ def register():
         email = request.form['email']
         password = request.form['password']
         password_check = request.form['pcheck']
-        h = hashlib.sha256(password.encode())
+
         # 一些判断语句，比如输入空白提示，2次密码不同提示，用户名重复提示等等
         sql = "select * from user where username = (%s)"
         cur.execute(sql, username)
@@ -205,10 +241,12 @@ def register():
             return "<h1>注册失败，username \"" + username + "\" existed.</h1>" + redirect + rd_fail
 
         # 新用户添加到database
+        salt = bcrypt.gensalt()
+        h = password.encode()
+        hashed = bcrypt.hashpw(h,salt)
         sql = "insert into user(username,email,password) values (%s,%s,%s)"
-        cur.execute(sql, (username, email, h.hexdigest()))
+        cur.execute(sql, (username, email, hashed))
 
-        # insert online status
         online = "insert into online_status(username) value(%s)"
         cur.execute(online, username)
         db.commit()
@@ -216,8 +254,6 @@ def register():
             return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc2
         else:
             return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc
-        # return render_template('register.html', rep=username,title="欢迎登入")
-        # rep和title是html里面{{}}里的变量
     if 'user' in session:
         return render_template('register.html', user=session['user'])
     return render_template('register.html')
@@ -229,46 +265,6 @@ def index2():
         username = session['user']
         return 'Logged in as ' + username + '<br>' + "<b><a href = '/logout'>click here to log out</a></b>"
     return "You are not logged in <br><a href = '/login.html'>" + "click here to log in</a>"
-
-
-@app.route('/reset', methods=['POST', 'GET'])
-def resetpassword():
-    if 'username' not in session:
-        return redirect('/login.html')
-    username = session['user']
-    if request.method == "POST":
-        old_password = request.form['oldpassword']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        if password != confirm_password:
-            return "Two new passwords does not match <br><a href = '/reset'>" + "click here to reset again</a>"
-        print(username)
-        print(password)
-        password = hashlib.sha256(password.encode())
-        old_password = hashlib.sha256(old_password.encode())
-        print(password)
-        print("hashed hex  password: " + password.hexdigest())
-        # cur=db.cursor()
-        result = cur.execute("SELECT * FROM user Where username=%s", [username])
-
-        if result > 0:
-            user = cur.fetchone()
-            print(result)
-            print(old_password)
-            originpassword = user['password']
-            print(originpassword)
-            newpassword = password.hexdigest()
-            if old_password.hexdigest() != originpassword:
-                return "Old password is incorrect <br><a href = '/reset'>" + "click here to to reset again</a>"
-
-            if newpassword == originpassword:
-                return "Old password can not be used as new password in order to improve your account security<br><a href = '/reset'>" + "click here to reset again</a>"
-
-            cur.execute("UPDATE user SET password=%s WHERE username=%s", (newpassword, username))
-            db.commit()
-            return "Updated successfully <br><a href = '/a'>" + "click here to the home page</a>"
-
-    return render_template('profile.html')
 
 
 @app.route('/profile', methods=['POST', 'GET'])
