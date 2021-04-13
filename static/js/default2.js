@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
-    namespace = '/test';
-    var socket = io(namespace);
-
+//    namespace = '/test';
+//    var socket = io(namespace);
+    var socket = io()
     socket.on('blog_done', function(record) {
         var history = document.getElementById('chat');
         response = "<div class='history'><p>Uploaded by " + record.user + " by date: " + record.date + "</p><hr>";
@@ -10,10 +10,16 @@ $(document).ready(function() {
             response += "<embed src='static/images/" + record.filename + "' type='"+ record.filetype + "' width='90%'>";
         }
         response += "<p>Description: " + record.comment + "</p><br/></div>"
-
-
         history.innerHTML += response;
     });
+
+    socket.on('privateMessage',function(msg) {
+        var unread = document.getElementById('unread')
+        unread.innerHTML = "UNREAD"
+        alert("New message from "+msg.sender);
+        });
+
+
 
     $('button').click(function(){
         var comment = $('#comment').val();
