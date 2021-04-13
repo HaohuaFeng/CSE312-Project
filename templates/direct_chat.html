@@ -32,16 +32,24 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-   var socket = io('/direct_chat');
-       socket.on('connect', function() {
-        socket.send('{{sender}} has connected!');
-       });
-       socket.on('message',function(msg) {
-        $("#messages").append('<li>'+msg+'</li>');
+   var socket = io();
+<!--       socket.on('connect', function() {-->
+<!--        socket.emit('connect','{{sender}} has connected!');-->
+<!--       });-->
+       socket.on('privateMessage',function(msg) {
+        $("#messages").append('<li>'+msg.sender+' send to '+ msg.receiver + ': '+ msg.message+   '</li>');
         console.log('received message');
+        alert("New message from "+msg.sender);
         });
         $('#sendbutton').on('click',function() {
-            socket.send('{{sender}} send to {{send_to}}:'+$('#myMessage').val());
+            var sender = "{{sender}}";
+            console.log(sender);
+            var receiver = "{{send_to}}";
+            console.log(receiver);
+            var message = $('#myMessage').val();
+            console.log(message);
+            $("#messages").append('<li>'+sender+' send to '+ receiver + ': '+ message+   '</li>');
+            socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
             $('#myMessage').val('');
        });
        });
