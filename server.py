@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, session
 import pymysql
 import os
-import hashlib
 import bcrypt
 # 导入时间lib
 from datetime import datetime
-from flask_socketio import SocketIO, emit, send, join_room,leave_room
+from flask_socketio import SocketIO, emit, join_room,leave_room
 import json
 import base64
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
@@ -29,7 +28,7 @@ cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_b
 db.commit()
 
 app = Flask(__name__)
-app.secret_key = b'fjasldf;jlasfj#jfadlDJL23@ljfasljAi'
+app.secret_key = os.urandom(50)
 app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
 
@@ -60,7 +59,7 @@ def hello_world():
     return render_template('index.html', user=username, blogs=blogs, users=users)
 
 
-@socketio.on('send-message', namespace='/test')
+@socketio.on('send-message')
 def display(message):
     if 'user' in session:
         username = session['user']
@@ -82,7 +81,7 @@ def display(message):
             file2.close()
 
     now = datetime.now()
-    date = now.strftime("%d/%m/%Y %H:%M:%S")
+    date = now.strftime("%m/%d/%Y %H:%M:%S")
 
     sql = "insert into blog values (%s,%s,%s,%s,%s)"
     cur.execute(sql, (file_name, file_type, comment, username, date))
@@ -259,14 +258,6 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/a')
-def index2():
-    if 'user' in session:
-        username = session['user']
-        return 'Logged in as ' + username + '<br>' + "<b><a href = '/logout'>click here to log out</a></b>"
-    return "You are not logged in <br><a href = '/login.html'>" + "click here to log in</a>"
-
-
 @app.route('/profile', methods=['POST', 'GET'])
 @app.route('/profile.html', methods=['POST', 'GET'])
 def profile():
@@ -314,10 +305,42 @@ def directChat(send_to_user):
     else:
         return "Please log in"
 
-@socketio.on('message',namespace='/direct_chat')
+@app.route('/direct_chat')
+def directChat2():
+    if 'user' in session:
+        user = session['user']
+        return render_template("direct_chat.html",sender=user)
+    else:
+        return "Please log in"
+
+
+@socketio.on('connect')
+def handleConnect():
+    if 'user' in session:
+        # print(session.get('user'))
+        # print(session['user'])
+        # print("joining room")
+        room = session['user']
+        join_room(room)
+
+@socketio.on('disconnect')
+def handleDisconnect():
+    if 'user' in session:
+        # print(session['user'])
+        # print("leaving room")
+        room = session['user']
+        leave_room(room)
+
+@socketio.on('message')
 def handleMessage(msg):
-    print("message: " + msg)
-    send(msg,broadcast=True)
+    if 'user' in session:
+        # print(msg)
+        # print("jiepo")
+        # print(msg.get('sender'))
+        # print(msg.get('receiver'))
+        # print(msg.get('message'))
+        emit('privateMessage', {'sender': session['user'], 'receiver': msg.get('receiver'), 'message':msg.get('message') }, room=msg.get('receiver') )
+
 
 @app.route('/user_profile/<look_user>')
 def userProfile(look_user):
