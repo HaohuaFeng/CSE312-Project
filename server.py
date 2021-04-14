@@ -10,7 +10,7 @@ import base64
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(host='localhost', user='root', password="sze111", charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -22,16 +22,16 @@ cur.execute(
 cur.execute(
     "create table IF NOT EXISTS blog(filename varchar(200), filetype varchar(50), "
     "comment varchar(500), username varchar(200), date varchar(20));")
-
+cur.execute(
+    "create table IF NOT EXISTS message(sender varchar(50), receiver varchar(50),message varchar(500));")
 cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
 cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
+cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
 db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
-app.config['SECRET_KEY'] = 'mysecret'
 socketio = SocketIO(app)
-
 
 online_users = []
 
@@ -39,7 +39,6 @@ online_users = []
 @app.before_request
 def advance_session_timeout():
     session.permanent = False
-
 
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/index', methods=['POST', 'GET'])
@@ -49,7 +48,6 @@ def hello_world():
         username = session['user']
     else:
         username = None
-
     sql2 = "select * from blog"
     cur.execute(sql2)
     blogs = cur.fetchall()
@@ -81,7 +79,7 @@ def connect_handler():
     if 'user' in session:
         room = session['user']
         join_room(room)
-        if online_users.count(session['user']) == 0:
+        if session['user'] not in online_users:
             online_users.append(session['user'])
             sql = "select username, icon from user where username=(%s)"
             cur.execute(sql, session['user'])
@@ -147,8 +145,6 @@ def display(message):
 @app.route('/about.html')
 def about():
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         return render_template('about.html', user=session['user'])
     return render_template('about.html')
 
@@ -211,8 +207,6 @@ def reset():
             return "<h1>The old password is incorrect. Please try again.</h1>" + redirect + rd_fail
 
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         return render_template('reset.html', user=session['user'])
     return render_template('reset.html')
 
@@ -295,8 +289,6 @@ def register():
         else:
             return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         return render_template('register.html', user=session['user'])
     return render_template('register.html')
 
@@ -316,14 +308,12 @@ def profile():
         fout = open(path, 'wb')
         fout.write(ic)
         fout.close()
-        print(email + " " + gender + " " + birth + " " + pp + " " + introduction + " " + icon.filename)
+        # print(email + " " + gender + " " + birth + " " + pp + " " + introduction + " " + icon.filename)
         sql = "update user set email=%s,icon=%s,gender=%s,birth=%s,personal_page=%s,introduction=%s where username=%s"
         cur.execute(sql, (email, icon.filename, gender, birth, pp, introduction, session['user']))
         db.commit()
 
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         username = session['user']
         sql = "select * from user where username = (%s)"
         cur.execute(sql, username)
@@ -346,10 +336,12 @@ def profile():
 @app.route('/direct_chat/<send_to_user>')
 def directChat(send_to_user):
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         sender = session['user']
-        return render_template("direct_chat.html",sender=sender,send_to=send_to_user)
+        sql = "select * from message where (sender=%s and receiver=%s) or (sender=%s and receiver=%s);"
+        cur.execute(sql,(sender,send_to_user,send_to_user,sender))
+        messages = cur.fetchall()
+
+        return render_template("direct_chat.html",sender=sender,send_to=send_to_user,messages=messages)
     else:
         return "Please log in"
 
@@ -357,42 +349,23 @@ def directChat(send_to_user):
 @app.route('/direct_chat')
 def directChat2():
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         user = session['user']
         return render_template("direct_chat.html",sender=user)
     else:
         return "Please log in"
 
 
-# @socketio.on('connect')
-# def handleConnect():
-#     if 'user' in session:
-#         # print(session.get('user'))
-#         # print(session['user'])
-#         # print("joining room")
-#         room = session['user']
-#         join_room(room)
-#
-# @socketio.on('disconnect')
-# def handleDisconnect():
-#     if 'user' in session:
-#         # print(session['user'])
-#         # print("leaving room")
-#         room = session['user']
-#         leave_room(room)
-
 @socketio.on('message')
 def handleMessage(msg):
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
-        # print(msg)
-        # print("jiepo")
-        # print(msg.get('sender'))
-        # print(msg.get('receiver'))
-        # print(msg.get('message'))
-        emit('privateMessage', {'sender': session['user'], 'receiver': msg.get('receiver'), 'message':msg.get('message') }, room=msg.get('receiver') )
+        sender = msg.get('sender')
+        receiver = msg.get('receiver')
+        message = msg.get('message')
+        sql = "insert into message values (%s,%s,%s);"
+        cur.execute(sql,(sender,receiver,message))
+        db.commit()
+
+        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message':message }, room=receiver )
 
 
 @app.route('/user_profile/<look_user>')
@@ -401,8 +374,6 @@ def userProfile(look_user):
     cur.execute(sql, look_user)
     look_user1 = cur.fetchone()
     if 'user' in session:
-        if online_users.count(session['user']) == 1:
-            online_users.append(session['user'])
         user = session['user']
         if user == look_user:
             return redirect(url_for('profile'))
