@@ -7,7 +7,7 @@ $(document).ready(function() {
     socket.on('new_user', function(user) {
         var users = document.getElementById('current_users');
         var all_users = users.innerHTML;
-        if (!all_users.includes(user.user)){
+        if (!all_users.includes(user.username)){
             var new_user = '<img src="static/images/' + user.icon + '" width=50/>';
             new_user += '<a href="user_profile/' + user.username + '"> ' + user.username + '</a><br/>';
             users.innerHTML += new_user;
