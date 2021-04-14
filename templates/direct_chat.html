@@ -57,6 +57,12 @@ $(document).ready(function() {
        });
        });
 </script>
+{% for message in messages %}
+<li>{{message['sender']}} send to {{message['receiver']}}: {{message['message']}}</li>
+
+{% endfor %}
+
+
 <ul id="messages"></ul>
     <input type="text" id="myMessage">
     <button id="sendbutton">send</button>
