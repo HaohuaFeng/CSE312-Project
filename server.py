@@ -388,10 +388,21 @@ def userProfile(look_user):
         return render_template("user_profile.html", look_user=look_user)
 
 
-@app.route('/check_user_exist', methods=['POST'])
+@app.route('/username_validation/')
 def check_user_exist():
-    username = request.form['username']
-    print(username)
+    result = {"exists": bool, "display": ""}
+    username = request.args.get("username")
+    if username:
+        sql = "select * from user where username = (%s)"
+        cur.execute(sql, username)
+        user = cur.fetchone()
+        if user:
+            result["exists"] = True
+            result["display"] = "<font color='red'> ❌ username \"" + username + "\" has been taken</font>"
+        else:
+            result["exists"] = False
+            result["display"] = "<font color='green'> ✔ </font>"
+    return jsonify(result)
 
 
 if __name__ == "__main__":
