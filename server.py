@@ -392,6 +392,10 @@ def userProfile(look_user):
 def check_user_exist():
     result = {"exists": bool, "display": ""}
     username = request.args.get("username")
+    if len(username) == 0:
+        result["exists"] = True
+        result["display"] = "<font color='red'> ❌ Empty Username</font>"
+        return jsonify(result)
     if username:
         sql = "select * from user where username = (%s)"
         cur.execute(sql, username)

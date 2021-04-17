@@ -36,7 +36,8 @@
                 <label for="email">E-mail :</label>
                 <input type="email" name="email" id="email" required><br>
                 <label for="password">Password :</label>
-                <input type="password" name="password" id="password" required onkeyup="check_password_match()"><br>
+                <input type="password" name="password" id="password" required onkeyup="password_validation(); check_password_match()">
+                <span id="valid_pw"></span><br><br>
                 <label for="pcheck">Confirm Password: </label>
                 <input type="password" name="pcheck" id="pcheck" required onkeyup="check_password_match()">
                 <span id="checkpw"></span><br>
