@@ -30,16 +30,31 @@
         <hr>
         <div class="login">
             <form method="post">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username" required><br>
-                    <label for="old_password">Old password:</label>
-                    <input type="password" name="old_password" id="old_password" required><br>
-                    <label for="new_password">New password:</label>
-                    <input type="password" name="new_password" id="new_password" required><br>
-                    <label for="cnew_password">Confirm your new password:</label>
-                    <input type="password" name="cnew_password" id="cnew_password" required><br>
-                    <input type="submit" value="Next">
-                </form>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required><br>
+                <label for="old_password">Old password:</label>
+                <input type="password" name="old_password" id="old_password" required><br>
+                <label for="new_password">New password:</label>
+                <input type="password" name="new_password" id="new_password" required onkeyup="check_password_match()"><br>
+                <label for="cnew_password">Confirm your new password:</label>
+                <input type="password" name="cnew_password" id="cnew_password" required onkeyup="check_password_match()">
+                <span id="checkpw"></span><br>
+                <input type="submit" id="submit" value="Next">
+            </form>
+            <script>
+                function check_password_match(){
+                    const pw = document.getElementById("new_password").value;
+                    const cpw = document.getElementById("cnew_password").value;
+                    if(pw !== cpw){
+                        document.getElementById("checkpw").innerHTML="<font color='red'> ❌ new passwords are not matched</font>";
+                        document.getElementById("submit").disabled = true;
+                    }
+                    else if(pw === cpw){
+                        document.getElementById("checkpw").innerHTML="<font color='green'> ✔</font>";
+                        document.getElementById("submit").disabled = false;
+                    }
+                }
+            </script>
         </div>
         <p class="casualCase"><a href="login.html">Cancel</a></p>
     </div>

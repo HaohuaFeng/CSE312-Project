@@ -1,16 +1,18 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import pymysql
 import os
 import bcrypt
 # 导入时间lib
 from datetime import datetime
-from flask_socketio import SocketIO, emit, join_room,leave_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import json
 import base64
+
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(host='localhost', user='root',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password='123456789', charset='utf8mb4',
+                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -39,6 +41,7 @@ online_users = []
 @app.before_request
 def advance_session_timeout():
     session.permanent = False
+
 
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/index', methods=['POST', 'GET'])
@@ -111,6 +114,7 @@ def show_users():
         return json.dumps(users_login)
     return json.dumps("")
 
+
 @socketio.on('send-message')
 def display(message):
     if 'user' in session:
@@ -139,7 +143,9 @@ def display(message):
     cur.execute(sql, (file_name, file_type, comment, username, date))
     db.commit()
 
-    emit('blog_done', {'user': username, 'date': date, 'comment': comment, 'filename': file_name, 'filetype':file_type}, broadcast=True)
+    emit('blog_done',
+         {'user': username, 'date': date, 'comment': comment, 'filename': file_name, 'filetype': file_type},
+         broadcast=True)
 
 
 @app.route('/about.html')
@@ -164,7 +170,7 @@ def login():
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirect + rd_fail
 
-        if bcrypt.checkpw(password.encode(),name['password'].encode()):
+        if bcrypt.checkpw(password.encode(), name['password'].encode()):
             if username in online_users:
                 return "<h1>This account is already logged in. </h1>" + redirect + rd_fail
             session['user'] = username
@@ -195,7 +201,7 @@ def reset():
         if new_password != cnew_password:
             return "<h1>The new passwords are not same!</h1>" + redirect + rd_fail
 
-        if bcrypt.checkpw(old_password.encode(),name['password'].encode()):
+        if bcrypt.checkpw(old_password.encode(), name['password'].encode()):
             salt = bcrypt.gensalt()
             h = new_password.encode()
             hashed = bcrypt.hashpw(h, salt)
@@ -279,7 +285,7 @@ def register():
         # 新用户添加到database
         salt = bcrypt.gensalt()
         h = password.encode()
-        hashed = bcrypt.hashpw(h,salt)
+        hashed = bcrypt.hashpw(h, salt)
         sql = "insert into user(username,email,password) values (%s,%s,%s)"
         cur.execute(sql, (username, email, hashed))
         db.commit()
@@ -338,10 +344,10 @@ def directChat(send_to_user):
     if 'user' in session:
         sender = session['user']
         sql = "select * from message where (sender=%s and receiver=%s) or (sender=%s and receiver=%s);"
-        cur.execute(sql,(sender,send_to_user,send_to_user,sender))
+        cur.execute(sql, (sender, send_to_user, send_to_user, sender))
         messages = cur.fetchall()
 
-        return render_template("direct_chat.html",sender=sender,send_to=send_to_user,messages=messages)
+        return render_template("direct_chat.html", sender=sender, send_to=send_to_user, messages=messages)
     else:
         return "Please log in"
 
@@ -350,7 +356,7 @@ def directChat(send_to_user):
 def directChat2():
     if 'user' in session:
         user = session['user']
-        return render_template("direct_chat.html",sender=user)
+        return render_template("direct_chat.html", sender=user)
     else:
         return "Please log in"
 
@@ -362,10 +368,10 @@ def handleMessage(msg):
         receiver = msg.get('receiver')
         message = msg.get('message')
         sql = "insert into message values (%s,%s,%s);"
-        cur.execute(sql,(sender,receiver,message))
+        cur.execute(sql, (sender, receiver, message))
         db.commit()
 
-        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message':message }, room=receiver )
+        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message': message}, room=receiver)
 
 
 @app.route('/user_profile/<look_user>')
@@ -377,9 +383,15 @@ def userProfile(look_user):
         user = session['user']
         if user == look_user:
             return redirect(url_for('profile'))
-        return render_template("user_profile.html",user=user,look_user=look_user1)
+        return render_template("user_profile.html", user=user, look_user=look_user1)
     else:
-        return render_template("user_profile.html",look_user=look_user)
+        return render_template("user_profile.html", look_user=look_user)
+
+
+@app.route('/check_user_exist', methods=['POST'])
+def check_user_exist():
+    username = request.form['username']
+    print(username)
 
 
 if __name__ == "__main__":

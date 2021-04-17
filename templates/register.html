@@ -29,17 +29,36 @@
         <div class="description">This is Register Page</div>
         <hr>
         <div class="register">
-            <form method="post">
+            <form name="register" method="post">
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" required><br>
+                <input type="text" name="username" id="username" required>
+                <span id="display_exist"></span><br>
                 <label for="email">E-mail :</label>
                 <input type="email" name="email" id="email" required><br>
                 <label for="password">Password :</label>
-                <input type="password" name="password" id="password" required><br>
+                <input type="password" name="password" id="password" required onkeyup="check_password_match()"><br>
                 <label for="pcheck">Confirm Password: </label>
-                <input type="password" name="pcheck" id="pcheck" required><br>
-                <input type="submit" value="Register">
+                <input type="password" name="pcheck" id="pcheck" required onkeyup="check_password_match()">
+                <span id="checkpw"></span><br>
+                <input type="submit" id="submit" value="Register">
             </form>
+            <script>
+                function check_password_match(){
+                    const pw = document.getElementById("password").value;
+                    const cpw = document.getElementById("pcheck").value;
+                    if(pw !== cpw){
+                        document.getElementById("checkpw").innerHTML="<font color='red'> ❌ passwords are not matched</font>";
+                        document.getElementById("submit").disabled = true;
+                    }
+                    else if(pw === cpw){
+                        document.getElementById("checkpw").innerHTML="<font color='green'> ✔</font>";
+                        document.getElementById("submit").disabled = false;
+                    }
+                }
+                function check_user(){
+                    
+                }
+            </script>
         </div>
         <p class="casualCase">I have an account. <a href="/login.html">Login</a>.</p>
     </div>
