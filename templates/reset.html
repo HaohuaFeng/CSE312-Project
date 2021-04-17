@@ -9,6 +9,7 @@
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="../static/js/default.js" charset="utf-8"></script>
+    <script src="../static/js/reset_check.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -41,45 +42,6 @@
                 <span id="checkpw"></span><br>
                 <input type="submit" id="submit" value="Next">
             </form>
-            <script>
-                let username_check = false;
-                let password_check = false;
-                function check_user(){
-                    const username = document.getElementById("username").value;
-                    const url = "/username_validation/?username=" + username;
-                    $.ajax(
-                        {
-                            url: url,
-                            type: "get",
-                            data: "",
-                            success: function (get_from_server) {
-                                if (get_from_server['exists']) {
-                                    username_check = true;
-                                    document.getElementById("display_exist").innerHTML = "<font color='green'> ✔</font>";
-                                } else {
-                                    username_check = false;
-                                    document.getElementById("display_exist").innerHTML = "<font color='red'> ❌ username not found</font>"
-                                }
-                                document.getElementById("submit").disabled
-                                    = (!username_check && !password_check) || !username_check || !password_check;
-                            }
-                        }
-                    )
-                }
-                function check_password_match() {
-                    const pw = document.getElementById("new_password").value;
-                    const cpw = document.getElementById("cnew_password").value;
-                    if (pw !== cpw) {
-                        document.getElementById("checkpw").innerHTML = "<font color='red'> ❌ passwords are not matched</font>";
-                        password_check = false;
-                    } else if (pw === cpw) {
-                        document.getElementById("checkpw").innerHTML = "<font color='green'> ✔</font>";
-                        password_check = true;
-                    }
-                    document.getElementById("submit").disabled
-                        = (!username_check && !password_check) || !username_check || !password_check;
-                }
-            </script>
         </div>
         <p class="casualCase"><a href="login.html">Cancel</a></p>
     </div>

@@ -9,6 +9,7 @@
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="../static/js/default.js" charset="utf-8"></script>
+    <script src="../static/js/register_check.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -41,53 +42,6 @@
                 <span id="checkpw"></span><br>
                 <input type="submit" id="submit" value="Register">
             </form>
-            <script>
-                let username_check = false
-                let password_check = false
-                function check_user(){
-                    const username = document.getElementById("username").value;
-                    const url = "/username_validation/?username=" + username;
-                    $.ajax(
-                        {
-                            url: url,
-                            type: "get",
-                            data: "",
-                            success: function (get_from_server) {
-                                if (get_from_server['exists']) {
-                                    username_check = false
-                                    document.getElementById("display_exist").innerHTML = get_from_server['display']
-                                } else {
-                                    username_check = true
-                                    document.getElementById("display_exist").innerHTML = get_from_server['display']
-                                }
-                                if ((!username_check && !password_check) || !username_check || !password_check){
-                                    document.getElementById("submit").disabled = true;
-                                }
-                                else {
-                                    document.getElementById("submit").disabled = false;
-                                }
-                            }
-                        }
-                    )
-                }
-                function check_password_match() {
-                    const pw = document.getElementById("password").value;
-                    const cpw = document.getElementById("pcheck").value;
-                    if (pw !== cpw) {
-                        document.getElementById("checkpw").innerHTML = "<font color='red'> ❌ passwords are not matched</font>";
-                        password_check = false
-                    } else if (pw === cpw) {
-                        document.getElementById("checkpw").innerHTML = "<font color='green'> ✔</font>";
-                        password_check = true
-                    }
-                    if ((!username_check && !password_check) || !username_check || !password_check){
-                        document.getElementById("submit").disabled = true;
-                    }
-                    else {
-                        document.getElementById("submit").disabled = false;
-                    }
-                }
-            </script>
         </div>
         <p class="casualCase">I have an account. <a href="/login.html">Login</a>.</p>
     </div>
