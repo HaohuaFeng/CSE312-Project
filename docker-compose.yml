@@ -19,6 +19,6 @@ services:
       WAIT_HOSTS: db:3306
       MYSQL_PASSWORD: changeme
     ports:
-      - '8080:8000'
+      - '80:8000'
 volumes:
   db_file: {}
