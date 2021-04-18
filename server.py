@@ -9,14 +9,14 @@ import json
 import base64
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
-# db = pymysql.connect(host='db', user='root', password=os.getenv(
-#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-db = pymysql.connect(host='localhost', user='root', password='123456789', charset='utf8mb4',
-                     cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='db', user='root', password=os.getenv(
+    'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='localhost', user='root', password='123456789', charset='utf8mb4',
+#                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
-cur.execute("create database IF NOT EXISTS zhong")
-cur.execute("use zhong")
+# cur.execute("create database IF NOT EXISTS zhong")
+# cur.execute("use zhong")
 cur.execute(
     "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(500),icon varchar("
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
