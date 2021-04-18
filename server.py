@@ -5,7 +5,6 @@ import bcrypt
 # 导入时间lib
 from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room, leave_room
-import json
 import base64
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
@@ -111,8 +110,8 @@ def show_users():
         sql = "select username, icon from user where username in " + online_users_string
         cur.execute(sql)
         users_login = cur.fetchall()
-        return json.dumps(users_login)
-    return json.dumps("")
+        return jsonify(users_login)
+    return jsonify("")
 
 
 @socketio.on('send-message')
