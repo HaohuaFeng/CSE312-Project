@@ -1,7 +1,4 @@
 $(document).ready(function() {
-
-//    namespace = '/test';
-//    var socket = io(namespace);
     var socket = io()
 
     socket.on('new_user', function(user) {
@@ -35,11 +32,10 @@ $(document).ready(function() {
 
     $('button').click(function(){
         var comment = $('#comment').val();
-        var file = document.getElementById('form-file').files[0];
+        var file = document.getElementById("form-file").files[0];
+        document.getElementById("comment").value = "";
+        document.getElementById("form-file").value = "";
         if(file){
-            console.log("type and name")
-            console.log(file.type)
-            console.log(file.name)
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.addEventListener("load", function(){
