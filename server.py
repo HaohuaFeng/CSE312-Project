@@ -35,7 +35,7 @@ db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
-socketio = SocketIO(app, ping_timeout=99999, ping_interval=99999)
+socketio = SocketIO(app, ping_timeout=11000, ping_interval=11000)
 
 online_users = []
 users_icon = dict()
