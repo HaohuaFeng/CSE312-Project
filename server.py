@@ -6,16 +6,20 @@ import bcrypt
 from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import base64
+from PIL import Image
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
-db = pymysql.connect(host='db', user='root', password=os.getenv(
-    'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-# db = pymysql.connect(host='localhost', user='root', password='123456789', charset='utf8mb4',
+# db = pymysql.connect(host='db', user='root', password=os.getenv(
+#      'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
 #                     cursorclass=pymysql.cursors.DictCursor)
 
+db = pymysql.connect(host='localhost', user='root', password='sze111',
+                    cursorclass=pymysql.cursors.DictCursor)
+
 cur = db.cursor()
-# cur.execute("create database IF NOT EXISTS zhong")
-# cur.execute("use zhong")
+cur.execute("create database IF NOT EXISTS zhong")
+cur.execute("use zhong")
 cur.execute(
     "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(500),icon varchar("
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
@@ -25,16 +29,17 @@ cur.execute(
     "comment varchar(500), username varchar(200), date varchar(20));")
 cur.execute(
     "create table IF NOT EXISTS message(sender varchar(50), receiver varchar(50),message varchar(500));")
-cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
-cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
-cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
-db.commit()
+# cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
+# cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
+# cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
+# db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
 socketio = SocketIO(app)
 
 online_users = []
+users_icon = dict()
 
 
 @app.before_request
@@ -59,21 +64,18 @@ def hello_world():
         if num > 1:
             online_users.remove(x)
 
-    online_users_string = "("
-    for x in online_users:
-        online_users_string += ("'" + x + "',")
-    if len(online_users_string) != 1:
-        online_users_string = online_users_string[:-1]
-    online_users_string += ")"
+    users_login = list()
+    for user in online_users:
+        temp = dict()
+        temp['username'] = user
+        temp['icon'] = users_icon[user]
+        users_login.append(temp)
+    print(users_login)
 
-    if len(online_users_string) != 2:
-        sql = "select username, icon from user where username in " + online_users_string
-        cur.execute(sql)
-        users_login = cur.fetchall()
-
+    if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
     else:
-        return render_template('index.html', user=username, lbogs=blogs)
+        return render_template('index.html', user=username, blogs=blogs)
 
 
 @socketio.on('connect')
@@ -99,17 +101,14 @@ def disconnect_handler():
 
 @app.route("/get-users")
 def show_users():
-    online_users_string = "("
-    for x in online_users:
-        online_users_string += ("'" + x + "',")
-    if len(online_users_string) != 1:
-        online_users_string = online_users_string[:-1]
-    online_users_string += ")"
+    users_login = list()
+    for user in online_users:
+        temp = dict()
+        temp['username'] = user
+        temp['icon'] = users_icon[user]
+        users_login.append(temp)
 
-    if len(online_users_string) != 2:
-        sql = "select username, icon from user where username in " + online_users_string
-        cur.execute(sql)
-        users_login = cur.fetchall()
+    if users_login:
         return jsonify(users_login)
     return jsonify("")
 
@@ -173,6 +172,7 @@ def login():
             if username in online_users:
                 return "<h1>This account is already logged in. </h1>" + redirect + rd_fail
             session['user'] = username
+            users_icon[username] = name['icon']
             return "<h1>Welcome back：" + username + "</h1>" + redirect + rd_suc
         else:
             return "<h1>Failed. The username: " + username + " or password incorrect.</h1>" + redirect + rd_fail
@@ -313,10 +313,23 @@ def profile():
         fout = open(path, 'wb')
         fout.write(ic)
         fout.close()
+        img = Image.open(path)
+        img.thumbnail((400, 400))
+
+        icon_name = 'icon_' + icon.filename
+        img.save("static/images/" + icon_name)
+
+        os.remove(path)
         # print(email + " " + gender + " " + birth + " " + pp + " " + introduction + " " + icon.filename)
         sql = "update user set email=%s,icon=%s,gender=%s,birth=%s,personal_page=%s,introduction=%s where username=%s"
-        cur.execute(sql, (email, icon.filename, gender, birth, pp, introduction, session['user']))
+        cur.execute(sql, (email, icon_name, gender, birth, pp, introduction, session['user']))
         db.commit()
+        users_icon[session['user']] = icon_name
+
+        redirect = '<h3>Redirecting ... </h3>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="profile.html";}, 3000);</script>'
+
+        return "<h1>You have updated your profile successfully.</h1>" + redirect + rd_suc
 
     if 'user' in session:
         username = session['user']
