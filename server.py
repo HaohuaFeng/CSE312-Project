@@ -35,7 +35,8 @@ db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
-socketio = SocketIO(app, ping_timeout=11000, ping_interval=11000)
+# socketio = SocketIO(app, ping_timeout=20, ping_interval=20)
+socketio = SocketIO(app)
 
 online_users = []
 users_icon = dict()
@@ -54,8 +55,8 @@ def hello_world():
         username = session['user']
     else:
         username = None
-    sql2 = "select * from blog"
-    cur.execute(sql2)
+    sql = "select * from blog"
+    cur.execute(sql)
     blogs = cur.fetchall()
 
     for x in online_users:
