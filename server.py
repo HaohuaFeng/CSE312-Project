@@ -7,6 +7,7 @@ from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import base64
 from PIL import Image
+import sys
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 db = pymysql.connect(host='db', user='root', password=os.getenv(
@@ -34,7 +35,7 @@ db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
-socketio = SocketIO(app)
+socketio = SocketIO(app, ping_timeout=99999, ping_interval=99999)
 
 online_users = []
 users_icon = dict()
@@ -68,6 +69,11 @@ def hello_world():
         temp['username'] = user
         temp['icon'] = users_icon[user]
         users_login.append(temp)
+    print("online_users")
+    print(online_users)
+    print("users_login")
+    print(users_login)
+    sys.stdout.flush()
 
     if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
@@ -85,6 +91,8 @@ def connect_handler():
             sql = "select username, icon from user where username=(%s)"
             cur.execute(sql, (session['user'],))
             user = cur.fetchone()
+            print(str(session['user']) + " connected")
+            sys.stdout.flush()
             emit('new_user', user, broadcast=True)
 
 
@@ -93,6 +101,8 @@ def disconnect_handler():
     if ('user' in session) and (session['user'] in online_users):
         room = session['user']
         leave_room(room)
+        print(str(session['user']) + " disconnected")
+        sys.stdout.flush()
         online_users.remove(session['user'])
 
 

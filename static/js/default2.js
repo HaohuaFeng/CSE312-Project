@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    var socket = io()
+    var socket = io();
+
 
     socket.on('new_user', function(user) {
         var users = document.getElementById('current_users');
@@ -18,7 +19,7 @@ $(document).ready(function() {
         if(record.filename){
             response += "<embed src='static/images/" + record.filename + "' type='"+ record.filetype + "' width='90%'>";
         }
-        response += "<p>Description: " + record.comment + "</p><br/></div>"
+        response += "<p>" + record.comment + "</p><br/></div>"
         history.innerHTML += response;
     });
 
@@ -35,15 +36,21 @@ $(document).ready(function() {
         var file = document.getElementById("form-file").files[0];
         document.getElementById("comment").value = "";
         document.getElementById("form-file").value = "";
+
         if(file){
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.addEventListener("load", function(){
+                alert("Thank you for sharing.");
                 socket.emit('send-message', {'comment': comment, 'filename': file.name , 'filetype': file.type, 'file': reader.result});
             }, false);
         }
-        else{
+        else if(comment !== ''){
+            alert("Thank you for sharing.");
             socket.emit('send-message', {'comment': comment});
+        }
+        else{
+            alert("Please enter something.");
         }
     });
 });
