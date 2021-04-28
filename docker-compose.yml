@@ -7,7 +7,7 @@ services:
       - db_file:/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: changeme
+      MYSQL_PASSWORD: changeme
       MYSQL_DATABASE: zhong
 
   app:
