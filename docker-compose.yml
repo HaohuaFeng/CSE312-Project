@@ -1,13 +1,13 @@
 version: "3.3"
 services:
   db:
-    image: mysql
+    image: mysql:5.7
     container_name: faceNote_mysql
     volumes:
       - db_file:/mysql
     restart: always
     environment:
-      MYSQL_PASSWORD: changeme
+      MYSQL_ROOT_PASSWORD: changeme
       MYSQL_DATABASE: zhong
 
   app:

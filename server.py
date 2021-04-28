@@ -10,9 +10,9 @@ from PIL import Image
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
 db = pymysql.connect(host='db', user='root', password=os.getenv(
-     'MYSQL_PASSWORD'), db='zhong', cursorclass=pymysql.cursors.DictCursor)
+    'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-# db = pymysql.connect(host='localhost', user='root', password='sze111',
+# db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
 #                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
@@ -27,10 +27,10 @@ cur.execute(
     "comment varchar(500), username varchar(200), date varchar(20));")
 cur.execute(
     "create table IF NOT EXISTS message(sender varchar(50), receiver varchar(50),message varchar(500));")
-# cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
-# cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
-# cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
-# db.commit()
+cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
+cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
+cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
+db.commit()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(50)
@@ -68,7 +68,6 @@ def hello_world():
         temp['username'] = user
         temp['icon'] = users_icon[user]
         users_login.append(temp)
-    print(users_login)
 
     if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
@@ -84,7 +83,7 @@ def connect_handler():
         if session['user'] not in online_users:
             online_users.append(session['user'])
             sql = "select username, icon from user where username=(%s)"
-            cur.execute(sql, session['user'])
+            cur.execute(sql, (session['user'],))
             user = cur.fetchone()
             emit('new_user', user, broadcast=True)
 
@@ -158,7 +157,7 @@ def login():
         password = request.form['password']
         # 一些判断语句验证，1：用户名是否存在 2：密码是否正确
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         name = cur.fetchone()
         redirect = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
@@ -188,7 +187,7 @@ def reset():
         new_password = request.form['new_password']
         cnew_password = request.form['cnew_password']
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         name = cur.fetchone()
         redirect = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="reset.html";}, 3000);</script>'
@@ -222,7 +221,7 @@ def forgot():
 
         # 一些判断语句验证，1：用户名是否存在 2：密码是否正确
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         name = cur.fetchone()
         redirect = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="forgot.html";}, 3000);</script>'
@@ -265,7 +264,7 @@ def register():
 
         # 一些判断语句，比如输入空白提示，2次密码不同提示，用户名重复提示等等
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         name = cur.fetchone()
         ex = 0
         redirect = '<h3>Redirecting ... </h3>'
@@ -332,7 +331,7 @@ def profile():
     if 'user' in session:
         username = session['user']
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         user = cur.fetchone()
         gender = ""
         if user['gender']:
@@ -387,7 +386,7 @@ def handleMessage(msg):
 @app.route('/user_profile/<look_user>')
 def userProfile(look_user):
     sql = "select * from user where username = (%s)"
-    cur.execute(sql, look_user)
+    cur.execute(sql, (look_user,))
     look_user1 = cur.fetchone()
     if 'user' in session:
         user = session['user']
@@ -408,7 +407,7 @@ def check_user_exist():
         return jsonify(result)
     if username:
         sql = "select * from user where username = (%s)"
-        cur.execute(sql, username)
+        cur.execute(sql, (username,))
         user = cur.fetchone()
         if user:
             result["exists"] = True
