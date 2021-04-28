@@ -9,13 +9,11 @@ import base64
 from PIL import Image
 
 # 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
-# db = pymysql.connect(host='db', user='root', password=os.getenv(
-#      'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-# db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-#                     cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='db', user='root', password=os.getenv(
+     'MYSQL_PASSWORD'), db='zhong', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', password='sze111',
-                    cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='localhost', user='root', password='sze111',
+#                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
