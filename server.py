@@ -11,7 +11,7 @@ import sys
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
+db = pymysql.connect(host='localhost', user='root', charset='utf8mb4',
                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
@@ -57,10 +57,10 @@ def hello_world():
     cur.execute(sql)
     blogs = cur.fetchall()
 
-    for x in online_users:
-        num = online_users.count(x)
-        if num > 1:
-            online_users.remove(x)
+    # for x in online_users:
+    #     num = online_users.count(x)
+    #     if num > 1:
+    #         online_users.remove(x)
 
     users_login = list()
     for user in online_users:
