@@ -60,7 +60,6 @@ $(document).ready(function() {
     <div class="direct_chat_box">
         {% for message in messages %}
             {% if message['sender']== sender  %}
-        <!--        <li>{{message['sender']}} send to {{message['receiver']}}: {{message['message']}}</li>-->
                 <div class="sender_message">{{message['message']}}</div>
             {% else %}
                 <div class="receiver_message">{{message['message']}}</div>
