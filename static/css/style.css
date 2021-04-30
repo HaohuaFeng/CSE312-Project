@@ -162,3 +162,15 @@ input[type=reset]:hover{
     border: 1px red solid;
     margin: 10px;
 }
+
+#newCome {
+  visibility: hidden;
+  text-align: center;
+  background-color: yellow;
+  color: red;
+  font-size: 30px;
+}
+#newCome.show {
+  visibility: visible;
+}
+
