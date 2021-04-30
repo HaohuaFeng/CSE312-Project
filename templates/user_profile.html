@@ -17,7 +17,7 @@
         <a href="/about.html" >About</a>
         <a href="/register.html">Register</a>
         {% if user %}
-        <a href="/profile.html" class="profile">{{user}}</a>
+        <a href="/profile.html" class="profile" id="select_color">{{user}}</a>
         <a href="/logout">Logout</a>
         {% else %}
         <a href="login.html">Login</a>
@@ -33,15 +33,10 @@
                    <p>Email: {{look_user['email']}}</p>
                    <p>Gender: {{look_user['gender']}}</p>
                    <p>Birth: {{look_user['birth']}}</p>
-                   <p>Personal_Page: {{look_user['personal_page']}}</p>
-
-
+                   <p>Personal_Page: {{look_user['personal_page']}}</p>d
                </div>
                <div class="column middle">
-                   <p for="icon">{{look_user['username']}}'s icon<br>
-
-                       <img src="/static/images/{{look_user['icon']}}" id="pic" width='250' /></p><br>
-
+                   <img src="/static/images/{{look_user['icon']}}" id="pic" width='250' /></p><br>
                </div>
            </div>
            <div class="bot_profile">
