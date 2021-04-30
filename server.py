@@ -2,19 +2,17 @@ from flask import Flask, render_template, request, session, redirect, url_for, j
 import pymysql
 import os
 import bcrypt
-# 导入时间lib
 from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import base64
 from PIL import Image
 import sys
 
-# 在本地可以连接到MySQL server,放到docker上就不行了，查下怎么设置，参数，环境等等
-db = pymysql.connect(host='db', user='root', password=os.getenv(
-    'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='db', user='root', password=os.getenv(
+#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-# db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-#                     cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
+                    cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -257,8 +255,9 @@ def forgot():
 
 @app.route('/logout')
 def logout():
-    if ('user' in session) and (session['user'] in online_users):
-        online_users.remove(session['user'])
+    if 'user' in session:
+        if session['user'] in online_users:
+            online_users.remove(session['user'])
         session.pop('user', None)
     redirect = '<h3>Redirecting ... </h3>'
     rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'

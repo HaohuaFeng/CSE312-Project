@@ -24,8 +24,7 @@ $(document).ready(function() {
     });
 
     socket.on('privateMessage',function(msg) {
-        var unread = document.getElementById('unread')
-        unread.innerHTML = "UNREAD"
+
         alert("New message from "+msg.sender);
     });
 
