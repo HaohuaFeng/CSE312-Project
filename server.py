@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify, escape
 import pymysql
 import os
 import bcrypt
@@ -69,11 +69,11 @@ def hello_world():
         temp['username'] = user
         temp['icon'] = users_icon[user]
         users_login.append(temp)
-    print("online_users")
-    print(online_users)
-    print("users_login")
-    print(users_login)
-    sys.stdout.flush()
+    # print("online_users")
+    # print(online_users)
+    # print("users_login")
+    # print(users_login)
+    # sys.stdout.flush()
 
     if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
@@ -127,7 +127,6 @@ def display(message):
     else:
         username = None
     comment = message['comment']
-
     file_name = ''
     file_type = ''
     if 'file' in message.keys():
@@ -147,6 +146,8 @@ def display(message):
     sql = "insert into blog values (%s,%s,%s,%s,%s)"
     cur.execute(sql, (file_name, file_type, comment, username, date))
     db.commit()
+
+    comment = escape(comment)
 
     emit('blog_done',
          {'user': username, 'date': date, 'comment': comment, 'filename': file_name, 'filetype': file_type},
@@ -403,7 +404,8 @@ def handleMessage(msg):
         cur.execute(sql, (sender, receiver, message,date))
         db.commit()
 
-        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message': message, 'date': date}, room=receiver)
+        emit('privateMessage', {'sender': sender, 'receiver': receiver,
+                                'message': escape(message), 'date': date}, room=receiver)
 
 
 @app.route('/user_profile/<look_user>')

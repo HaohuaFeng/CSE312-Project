@@ -9,7 +9,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 <!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
-    <script src="../static/js/default.js" charset="utf-8"></script>
+<!--    <script src="../static/js/default.js" charset="utf-8"></script>-->
 </head>
 
 <body>
@@ -36,6 +36,8 @@ $(document).ready(function() {
         history += "<div class='receiver_message' title=" + msg.sender + "--" + msg.date + ">" + msg.message + "</div>";
         document.getElementById("message").innerHTML = history;
 
+//      using Snackbar/Toast to notice user there is new message comes
+//      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
         var x = document.getElementById("newCome");
         x.innerHTML = "New message come from "+ msg.sender;
         x.className = "show";
@@ -48,7 +50,12 @@ $(document).ready(function() {
             var message = $('#myMessage').val();
             if (message){
                 var history = document.getElementById("message").innerHTML;
-                history += "<div class='sender_message' title=" + sender + ">" + message + "</div>";
+                message1 = message.replace(/&/g, '&amp;');
+                message1 = message1.replace(/</g, '&lt;');
+                message1 = message1.replace(/>/g, '&gt;');
+                message1 = message1.replace(/"/g, '&quot;');
+                message1 = message1.replace(/'/g, '&apos;');
+                history += "<div class='sender_message' title=" + sender + ">" + message1 + "</div>";
                 document.getElementById("message").innerHTML = history;
 
                 socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
