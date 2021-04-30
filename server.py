@@ -11,7 +11,7 @@ import sys
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', charset='utf8mb4',
+db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
@@ -25,7 +25,8 @@ cur.execute(
     "create table IF NOT EXISTS blog(filename varchar(200), filetype varchar(50), "
     "comment varchar(500), username varchar(200), date varchar(20));")
 cur.execute(
-    "create table IF NOT EXISTS message(sender varchar(50), receiver varchar(50),message varchar(500));")
+    "create table IF NOT EXISTS message(sender varchar(50), receiver varchar(50),"
+    "message varchar(500), date varchar(20));")
 cur.execute("alter table user convert to character set utf8mb4 collate utf8mb4_bin;")
 cur.execute("alter table blog convert to character set utf8mb4 collate utf8mb4_bin;")
 cur.execute("alter table message convert to character set utf8mb4 collate utf8mb4_bin;")
@@ -168,22 +169,22 @@ def login():
         sql = "select * from user where username = (%s)"
         cur.execute(sql, (username,))
         name = cur.fetchone()
-        redirect = '<h3>Redirecting ... </h3>'
+        redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
         rd_suc = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
         if name is None:
-            return "<h1>This username does not exist!</h1>" + redirect + rd_fail
+            return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
         if bcrypt.checkpw(password.encode(), name['password'].encode()):
             if username in online_users:
-                return "<h1>This account is already logged in. </h1>" + redirect + rd_fail
+                return "<h1>This account is already logged in. </h1>" + redirecting + rd_fail
             session['user'] = username
             users_icon[username] = name['icon']
-            return "<h1>Welcome back：" + username + "</h1>" + redirect + rd_suc
+            return "<h1>Welcome back：" + username + "</h1>" + redirecting + rd_suc
         else:
-            return "<h1>Failed. The username: " + username + " or password incorrect.</h1>" + redirect + rd_fail
+            return "<h1>Failed. The username: " + username + " or password incorrect.</h1>" + redirecting + rd_fail
     if 'user' in session:
-        return render_template('login.html', user=session['user'])
+        return redirect(url_for('profile'))
     else:
         return render_template('login.html')
 
@@ -386,11 +387,13 @@ def handleMessage(msg):
         sender = msg.get('sender')
         receiver = msg.get('receiver')
         message = msg.get('message')
-        sql = "insert into message values (%s,%s,%s);"
-        cur.execute(sql, (sender, receiver, message))
+        now = datetime.now()
+        date = now.strftime("%m/%d/%Y %H:%M:%S")
+        sql = "insert into message values (%s,%s,%s,%s);"
+        cur.execute(sql, (sender, receiver, message,date))
         db.commit()
 
-        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message': message}, room=receiver)
+        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message': message, 'date': date}, room=receiver)
 
 
 @app.route('/user_profile/<look_user>')
