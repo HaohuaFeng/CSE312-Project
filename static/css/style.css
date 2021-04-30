@@ -183,3 +183,54 @@ input[type=reset]:hover{
   visibility: visible;
 }
 
+.direct_chat_container {
+    position: absolute;
+}
+.direct_chat_box {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 1px red solid;
+    font-size: 25px;
+    border-radius: 20px;
+    padding: 10px;
+    overflow-y: scroll;
+}
+
+.sender_message {
+    position: relative;
+    width: fit-content;
+    max-width: 350px;
+    word-wrap:break-word;
+    text-align: left;
+    padding: 5px 10px;
+    margin: 5px;
+    color: red;
+    border: 1px black solid;
+    border-radius: 20px;
+    display: inline-block;
+    float: left;
+    clear: right;
+
+}
+
+.receiver_message {
+    position: relative;
+    width: fit-content;
+    max-width: 350px;
+    word-wrap:break-word;
+    text-align: right;
+    color: blue;
+    border: 1px black solid;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    float: right;
+    clear: right;
+    display: inline-block;
+    float: right;
+    clear: left;
+
+}
+
+
