@@ -7,7 +7,11 @@ $(document).ready(function() {
         var all_users = users.innerHTML;
         if (!all_users.includes(user.username)){
             var new_user = '<img src="static/images/' + user.icon + '" width=50/>';
-            new_user += '<a href="user_profile/' + user.username + '"> ' + user.username + '</a><br/>';
+            new_user += '<a href="user_profile/' + user.username + '"> ' + user.username + '</a>';
+            new_user += '&nbsp;';
+            new_user += '<a href="direct_chat/' + user.username + '"> chat </a><br/>';
+//            new_user += '<span id="new' + user.username + '"</span><br/>';
+
             users.innerHTML += new_user;
         }
     });
@@ -19,13 +23,19 @@ $(document).ready(function() {
         if(record.filename){
             response += "<embed src='static/images/" + record.filename + "' type='"+ record.filetype + "' width='90%'>";
         }
-        response += "<p>" + record.comment + "</p><br/></div>"
+        response += "<p>" + record.comment + "</p><br/></div>";
         history.innerHTML += response;
     });
 
     socket.on('privateMessage',function(msg) {
+//      using Snackbar/Toast to notice user there is new message comes
+//      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
+        var x = document.getElementById("newCome");
+        x.innerHTML = "New message come from "+msg.sender;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
+//        alert("New message from "+msg.sender);
 
-        alert("New message from "+msg.sender);
     });
 
 
@@ -74,7 +84,12 @@ function renderUsers(rawUsers) {
     var users = JSON.parse(rawUsers);
     for (i = 0; i < users.length; i++){
         var new_user = '<img src="static/images/' + users[i]['icon'] + '" width=50/>';
-        new_user += '<a href="user_profile/' + users[i]['username'] + '"> ' + users[i]['username'] + '</a><br/>';
+        new_user += '<a href="user_profile/' + users[i].username + '"> ' + users[i].username + '</a>';
+        new_user += '&nbsp;';
+        new_user += '<a href="direct_chat/' + users[i].username + '">  chat </a><br/>';
+//        new_user += '<span id="new' + users[i].username + '"</span><br/>';
+
+
         list.innerHTML += new_user;
     }
 }
