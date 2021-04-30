@@ -199,13 +199,13 @@ def reset():
         sql = "select * from user where username = (%s)"
         cur.execute(sql, (username,))
         name = cur.fetchone()
-        redirect = '<h3>Redirecting ... </h3>'
+        redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="reset.html";}, 3000);</script>'
         rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
         if name is None:
-            return "<h1>This username does not exist!</h1>" + redirect + rd_fail
+            return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
         if new_password != cnew_password:
-            return "<h1>The new passwords are not same!</h1>" + redirect + rd_fail
+            return "<h1>The new passwords are not same!</h1>" + redirecting + rd_fail
 
         if bcrypt.checkpw(old_password.encode(), name['password'].encode()):
             salt = bcrypt.gensalt()
@@ -214,9 +214,9 @@ def reset():
             cur.execute("UPDATE user SET password=%s WHERE username=%s", (hashed, username))
             db.commit()
             session.pop('user', None)
-            return "<h1>The password is changed. Please login again.</h1>" + redirect + rd_suc
+            return "<h1>The password is changed. Please login again.</h1>" + redirecting + rd_suc
         else:
-            return "<h1>The old password is incorrect. Please try again.</h1>" + redirect + rd_fail
+            return "<h1>The old password is incorrect. Please try again.</h1>" + redirecting + rd_fail
 
     if 'user' in session:
         return render_template('reset.html', user=session['user'])
@@ -233,11 +233,11 @@ def forgot():
         sql = "select * from user where username = (%s)"
         cur.execute(sql, (username,))
         name = cur.fetchone()
-        redirect = '<h3>Redirecting ... </h3>'
+        redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="forgot.html";}, 3000);</script>'
         rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 5000);</script>'
         if name is None:
-            return "<h1>This username does not exist!</h1>" + redirect + rd_fail
+            return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
         if name['email'] == email:
             newpassword = 'abcd1234'
@@ -247,9 +247,9 @@ def forgot():
             cur.execute("UPDATE user SET password=%s WHERE username=%s", (hashed, username))
             db.commit()
             return "<h1>Hello, " + username + ", your new password is <span style='color:blue'>" + newpassword + \
-                   "</span>. This password is not secure, please change it immediately.</h1>" + redirect + rd_suc
+                   "</span>. This password is not secure, please change it immediately.</h1>" + redirecting + rd_suc
         else:
-            return "<h1>Either username or email is incorrect.</h1>" + redirect + rd_fail
+            return "<h1>Either username or email is incorrect.</h1>" + redirecting + rd_fail
 
     return render_template('forgot.html')
 
@@ -260,9 +260,9 @@ def logout():
         if session['user'] in online_users:
             online_users.remove(session['user'])
         session.pop('user', None)
-    redirect = '<h3>Redirecting ... </h3>'
+    redirecting = '<h3>Redirecting ... </h3>'
     rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-    return "<h1>You have logout successfully.</h1>" + redirect + rd_suc
+    return "<h1>You have logout successfully.</h1>" + redirecting + rd_suc
 
 
 @app.route('/register.html', methods=['POST', 'GET'])
@@ -278,16 +278,16 @@ def register():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         ex = 0
-        redirect = '<h3>Redirecting ... </h3>'
+        redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="register.html";}, 3000);</script>'
         rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
         rd_suc2 = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
         if name is None:
             ex = 1
         if password != password_check:
-            return "<h1>注册失败，two passwords don't match.</h1>" + redirect + rd_fail
+            return "<h1>Fail to register，two passwords don't match.</h1>" + redirecting + rd_fail
         elif ex == 0:
-            return "<h1>注册失败，username \"" + username + "\" existed.</h1>" + redirect + rd_fail
+            return "<h1>Fail to register，username \"" + username + "\" existed.</h1>" + redirecting + rd_fail
 
         # 新用户添加到database
         salt = bcrypt.gensalt()
@@ -298,9 +298,9 @@ def register():
         db.commit()
 
         if 'user' in session:
-            return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc2
+            return "<h1>Register successfully, new username: " + username + ".</h1>" + redirecting + rd_suc2
         else:
-            return "<h1>注册成功，欢迎新用户: " + username + ".</h1>" + redirect + rd_suc
+            return "<h1>Register successfully, new username: " + username + ".</h1>" + redirecting + rd_suc
     if 'user' in session:
         return render_template('register.html', user=session['user'])
     return render_template('register.html')
@@ -334,10 +334,10 @@ def profile():
         db.commit()
         users_icon[session['user']] = icon_name
 
-        redirect = '<h3>Redirecting ... </h3>'
+        redirecting = '<h3>Redirecting ... </h3>'
         rd_suc = '<script>setTimeout(function(){window.location.href="profile.html";}, 3000);</script>'
 
-        return "<h1>You have updated your profile successfully.</h1>" + redirect + rd_suc
+        return "<h1>You have updated your profile successfully.</h1>" + redirecting + rd_suc
 
     if 'user' in session:
         username = session['user']
@@ -356,12 +356,18 @@ def profile():
             return render_template('profile.html', user=user, check_NA='checked')
         return render_template('profile.html', user=user)
 
-    return "Please login first."
+    else:
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @app.route('/direct_chat/<send_to_user>')
 def directChat(send_to_user):
     if 'user' in session:
+        if session['user'] == send_to_user:
+            return redirect(url_for("profile"))
+
         sender = session['user']
         sql = "select * from message where (sender=%s and receiver=%s) or (sender=%s and receiver=%s);"
         cur.execute(sql, (sender, send_to_user, send_to_user, sender))
@@ -369,7 +375,9 @@ def directChat(send_to_user):
 
         return render_template("direct_chat.html", sender=sender, send_to=send_to_user, messages=messages)
     else:
-        return "Please log in"
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @app.route('/direct_chat')
@@ -378,7 +386,9 @@ def directChat2():
         user = session['user']
         return render_template("direct_chat.html", sender=user)
     else:
-        return "Please log in"
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @socketio.on('message')

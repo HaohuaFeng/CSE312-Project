@@ -61,14 +61,14 @@ input{
 }
 input[type=submit] {
   width: 150px;
-  margin: 8px 200px;
+  margin: 10px 150px;
   box-sizing: border-box;
   border-radius: 10px;
   font-size: 20px;
 }
 input[type=reset]{
   width: 150px;
-  margin: 8px 100px;
+  margin: 10px;
   box-sizing: border-box;
   border-radius: 10px;
   font-size: 20px;
@@ -140,21 +140,23 @@ input[type=reset]:hover{
     padding: 10px 10px;
     margin: 10px 5px;
 }
+
 .row {
     border: 1px red solid;
     margin: 10px;
+    width: 900px;
 }
 .column {
-    border: 1px red solid;
+
     float: left;
-    padding: 10px;
+    padding: 10px 30px;
 }
 .column.side {
     width: 500px;
     margin-right: 20px;
 }
 .column.middle {
-    300px;
+    width: 250px;
 }
 .row:after {
     content: "";
@@ -165,9 +167,10 @@ input[type=reset]:hover{
     border: 1px blue solid;
 }
 .bot_profile {
-    padding: 10px;
+    padding: 10px 30px;
     border: 1px red solid;
     margin: 10px;
+    width: 840px;
 }
 
 #newCome {
