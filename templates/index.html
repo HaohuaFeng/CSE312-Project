@@ -35,9 +35,7 @@
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
                     <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}}</a>
-                    &nbsp;
                     <a href="direct_chat/{{user['username']}}">Chat</a>
-<!--                    <span id="new{{user['username']}}"> </span><br/>-->
                 {% endfor %}
 
                 </div>
@@ -68,7 +66,7 @@
                 <hr>
                 {% for blog in blogs %}
                 <div class="history">
-                    <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
+                    <p><a href="user_profile/{{blog['username']}}" class="profile">{{blog['username']}}</a> | {{blog['date']}}</p>
                     <hr>
                     {% if blog['filename'] %}
                     <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">

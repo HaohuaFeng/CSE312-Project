@@ -10,16 +10,15 @@ $(document).ready(function() {
             new_user += '<a href="user_profile/' + user.username + '" class="profile"> ' + user.username + '</a>';
             new_user += '&nbsp;';
             new_user += '<a href="direct_chat/' + user.username + '"> Chat </a><br/>';
-//            new_user += '<span id="new' + user.username + '"</span><br/>';
 
             users.innerHTML += new_user;
         }
     });
 
-
     socket.on('blog_done', function(record) {
         var history = document.getElementById('chat');
-        response = "<div class='history'><p>Uploaded by " + record.user + " by date: " + record.date + "</p><hr>";
+        response = "<div class='history'><p><a href='user_profile/" + record.user + "' class='profile'>" +
+                    record.user + "</a> | " + record.date + "</p><hr>";
         if(record.filename){
             response += "<embed src='static/images/" + record.filename + "' type='"+ record.filetype + "' width='90%'>";
         }

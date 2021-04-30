@@ -137,8 +137,8 @@ input[type=reset]:hover{
     border: 1px solid blue;
     border-radius: 15px;
     box-shadow: 2px 5px 10px green;
-    padding: 10px 10px;
-    margin: 10px 5px;
+    padding: 10px 20px;
+    margin: 20px 5px;
 }
 
 .row {

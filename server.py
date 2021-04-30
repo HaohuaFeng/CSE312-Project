@@ -417,7 +417,7 @@ def userProfile(look_user):
             return redirect(url_for('profile'))
         return render_template("user_profile.html", user=user, look_user=look_user1)
     else:
-        return render_template("user_profile.html", look_user=look_user)
+        return render_template("user_profile.html", look_user=look_user1)
 
 
 @app.route('/username_validation/')
