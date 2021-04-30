@@ -166,9 +166,18 @@ input[type=reset]:hover{
 #newCome {
   visibility: hidden;
   text-align: center;
-  background-color: yellow;
+  background-color: cyan;
   color: red;
+  text-shadow: 0.1em 0.1em 0.2em black;
   font-size: 30px;
+  position: fixed;
+  z-index: 1;
+  left: 30%;
+  top: 30%;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 0 30px blue;
+
 }
 #newCome.show {
   visibility: visible;
