@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Project Name</title>
-    <div id="newCome"></div>
+
     <link rel="stylesheet" href="../static/css/style.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -14,7 +14,7 @@
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
     <div class="header">
         <a href="/index.html">Home</a>
         <a href="/about.html" >About</a>
@@ -30,45 +30,47 @@
 <script>
 $(document).ready(function() {
    var socket = io();
-<!--       socket.on('connect', function() {-->
-<!--        socket.emit('connect','{{sender}} has connected!');-->
-<!--       });-->
        socket.on('privateMessage',function(msg) {
-        $("#messages").append('<li>'+msg.sender+' send to '+ msg.receiver + ': '+ msg.message+   '</li>');
-        console.log('received message');
+
+        var history = document.getElementById("message").innerHTML;
+        history += "<div class='receiver_message' title=" + msg.sender + "--" + msg.date + ">" + msg.message + "</div>";
+        document.getElementById("message").innerHTML = history;
+
         var x = document.getElementById("newCome");
-        x.innerHTML = "New message come from "+msg.sender;
+        x.innerHTML = "New message come from "+ msg.sender;
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
-<!--        alert("New message from "+msg.sender);-->
         });
+
         $('#sendbutton').on('click',function() {
             var sender = "{{sender}}";
-            console.log(sender);
             var receiver = "{{send_to}}";
-            console.log(receiver);
             var message = $('#myMessage').val();
-            console.log(message);
-            $("#messages").append('<li>'+sender+' send to '+ receiver + ': '+ message+   '</li>');
-            socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
-            $('#myMessage').val('');
+            if (message){
+                var history = document.getElementById("message").innerHTML;
+                history += "<div class='sender_message' title=" + sender + ">" + message + "</div>";
+                document.getElementById("message").innerHTML = history;
+
+                socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
+                $('#myMessage').val('');
+            }
        });
-       });
+});
 </script>
 <div class="description">Chatting with <a href="../user_profile/{{send_to}}">{{send_to}}</a></div>
 <div class="direct_chat_container">
-    <div class="direct_chat_box">
+    <div class="direct_chat_box" id="message">
         {% for message in messages %}
             {% if message['sender']== sender  %}
-                <div class="sender_message">{{message['message']}}</div>
+                <div class="sender_message" title="{{sender}}--{{message['date']}}">{{message['message']}}</div>
             {% else %}
-                <div class="receiver_message">{{message['message']}}</div>
+                <div class="receiver_message" title="{{send_to}}--{{message['date']}}">{{message['message']}}</div>
             {% endif %}
         {% endfor %}
     </div>
 
-    <div class="send_out" id="messages">
-        <input type="text" id="myMessage">
+    <div class="send_out">
+        <input type="text" id="myMessage" required>
         <button id="sendbutton">send</button>
     </div>
 </div>

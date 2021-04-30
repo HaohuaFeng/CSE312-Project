@@ -34,9 +34,9 @@
                 <div id="current_users">
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="user_profile/{{user['username']}}">{{user['username']}}</a>
+                    <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}}</a>
                     &nbsp;
-                    <a href="direct_chat/{{user['username']}}">chat</a>
+                    <a href="direct_chat/{{user['username']}}">Chat</a>
 <!--                    <span id="new{{user['username']}}"> </span><br/>-->
                 {% endfor %}
 
@@ -54,7 +54,7 @@
                 <br/>
                 <label for="comment">Comment: </label><br/>
                 <input id="comment"  name="comment" placeholder="Write some comment ..." required>
-                <button type="button" >Send</button>
+                <button type="button" id="send_blog">Send</button>
 
                 {% else %}
                 You are not logged yet，<a href="login.html">Please login first</a>

@@ -7,9 +7,9 @@ $(document).ready(function() {
         var all_users = users.innerHTML;
         if (!all_users.includes(user.username)){
             var new_user = '<img src="static/images/' + user.icon + '" width=50/>';
-            new_user += '<a href="user_profile/' + user.username + '"> ' + user.username + '</a>';
+            new_user += '<a href="user_profile/' + user.username + '" class="profile"> ' + user.username + '</a>';
             new_user += '&nbsp;';
-            new_user += '<a href="direct_chat/' + user.username + '"> chat </a><br/>';
+            new_user += '<a href="direct_chat/' + user.username + '"> Chat </a><br/>';
 //            new_user += '<span id="new' + user.username + '"</span><br/>';
 
             users.innerHTML += new_user;
@@ -38,8 +38,6 @@ $(document).ready(function() {
 
     });
 
-
-
     $('button').click(function(){
         var comment = $('#comment').val();
         var file = document.getElementById("form-file").files[0];
@@ -50,16 +48,25 @@ $(document).ready(function() {
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.addEventListener("load", function(){
-                alert("Thank you for sharing.");
+                var x = document.getElementById("newCome");
+                x.innerHTML = "Thank you for sharing.";
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
                 socket.emit('send-message', {'comment': comment, 'filename': file.name , 'filetype': file.type, 'file': reader.result});
             }, false);
         }
         else if(comment !== ''){
-            alert("Thank you for sharing.");
+            var x = document.getElementById("newCome");
+            x.innerHTML = "Thank you for sharing.";
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
             socket.emit('send-message', {'comment': comment});
         }
         else{
-            alert("Please enter something.");
+            var x = document.getElementById("newCome");
+            x.innerHTML = "Please enter something.";
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
         }
     });
 });
@@ -84,9 +91,9 @@ function renderUsers(rawUsers) {
     var users = JSON.parse(rawUsers);
     for (i = 0; i < users.length; i++){
         var new_user = '<img src="static/images/' + users[i]['icon'] + '" width=50/>';
-        new_user += '<a href="user_profile/' + users[i].username + '"> ' + users[i].username + '</a>';
+        new_user += '<a href="user_profile/' + users[i].username + '" class="profile"> ' + users[i].username + '</a>';
         new_user += '&nbsp;';
-        new_user += '<a href="direct_chat/' + users[i].username + '">  chat </a><br/>';
+        new_user += '<a href="direct_chat/' + users[i].username + '">  Chat </a><br/>';
 //        new_user += '<span id="new' + users[i].username + '"</span><br/>';
 
 

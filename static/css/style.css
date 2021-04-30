@@ -1,3 +1,8 @@
+a {
+    text-decoration: none;
+    color: blue;
+}
+
 .header a{
     border: 1px solid;
     display: inline-block;
@@ -34,6 +39,7 @@
 }
 
 .main {
+    width: 1100px;
     font-size: 20px;
 }
 
@@ -53,7 +59,7 @@ input{
   margin: 8px 0;
   box-sizing: border-box;
 }
-input[type=submit]{
+input[type=submit] {
   width: 150px;
   margin: 8px 200px;
   box-sizing: border-box;
@@ -105,13 +111,13 @@ input[type=reset]:hover{
 }
 
 .left_col {
-    width: 25%;
+    width: 300px;;
     float: left;
     padding: 10px 10px;
 }
 
 .right_col {
-    width: 65%;
+    width: 750px;
     float: right;
     padding: 10px 10px;
 }
@@ -120,6 +126,7 @@ input[type=reset]:hover{
     border: 2px solid red;
     border-radius: 20px;
     box-shadow: 2px 5px 10px pink;
+    padding: 20px 20px;
 }
 
 .send_blog h2, .view_blog h2, .online_user h2{
@@ -197,32 +204,46 @@ input[type=reset]:hover{
     overflow-y: scroll;
 }
 
-.sender_message {
-    position: relative;
-    left: 5px;
-    width: fit-content;
-    max-width: 400px;
-    word-wrap: break-word;
-    text-align: right;
-    padding: 5px 10px;
-    margin: 5px;
-    color: red;
-    border: 1px black solid;
-    border-radius: 20px;
-}
-
 .receiver_message {
     position: relative;
-    right: -350px;
+    background-color: #FC3;
     width: fit-content;
     max-width: 400px;
     word-wrap: break-word;
     text-align: right;
     padding: 5px 10px;
     margin: 5px;
-    color: blue;
     border: 1px black solid;
     border-radius: 20px;
+    margin-right: auto;
 }
 
+.sender_message {
+    position: relative;
+    background-color: #9EEA6A;
+    width: fit-content;
+    max-width: 400px;
+    word-wrap: break-word;
+    text-align: right;
+    padding: 5px 10px;
+    margin: 5px;
+    border: 1px black solid;
+    border-radius: 20px;
+    margin-left: auto;
+}
 
+.send_out {
+   text-align: center;
+}
+
+#sendbutton, #send_blog {
+  width: 100px;
+  height: 40px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+#sendbutton:hover{
+  background-color: orange;
+}
