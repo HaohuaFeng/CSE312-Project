@@ -171,8 +171,8 @@ def login():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
@@ -201,8 +201,8 @@ def reset():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="reset.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/reset.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
         if new_password != cnew_password:
@@ -235,8 +235,8 @@ def forgot():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="forgot.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 5000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/forgot.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 5000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
@@ -262,7 +262,7 @@ def logout():
             online_users.remove(session['user'])
         session.pop('user', None)
     redirecting = '<h3>Redirecting ... </h3>'
-    rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+    rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
     return "<h1>You have logout successfully.</h1>" + redirecting + rd_suc
 
 
@@ -280,9 +280,9 @@ def register():
         name = cur.fetchone()
         ex = 0
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="register.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-        rd_suc2 = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/register.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        rd_suc2 = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
         if name is None:
             ex = 1
         if password != password_check:
@@ -336,7 +336,7 @@ def profile():
         users_icon[session['user']] = icon_name
 
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="profile.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/profile.html";}, 3000);</script>'
 
         return "<h1>You have updated your profile successfully.</h1>" + redirecting + rd_suc
 
@@ -359,7 +359,7 @@ def profile():
 
     else:
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
@@ -377,7 +377,7 @@ def directChat(send_to_user):
         return render_template("direct_chat.html", sender=sender, send_to=send_to_user, messages=messages)
     else:
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
@@ -388,7 +388,7 @@ def directChat2():
         return render_template("direct_chat.html", sender=user)
     else:
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
