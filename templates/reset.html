@@ -20,14 +20,14 @@
         <a href="about.html" >About</a>
         <a href="register.html" >Register</a>
         {% if user %}
-        <a href="profile.html" class="profile">{{user}}</a>
+        <a href="profile.html" class="profile" id="select_color">{{user}}</a>
         <a href="/logout">Logout</a>
         {% else %}
-        <a href="login.html" id="select_color">Login</a>
+        <a href="login.html">Login</a>
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">This is Login Page, get back into your account </div>
+        <div class="description">This is Reset Page, you can change password. </div>
         <hr>
         <div class="login">
             <form method="post">
