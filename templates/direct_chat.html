@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Project Name</title>
+    <div id="newCome"></div>
     <link rel="stylesheet" href="../static/css/style.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -35,7 +36,11 @@ $(document).ready(function() {
        socket.on('privateMessage',function(msg) {
         $("#messages").append('<li>'+msg.sender+' send to '+ msg.receiver + ': '+ msg.message+   '</li>');
         console.log('received message');
-        alert("New message from "+msg.sender);
+        var x = document.getElementById("newCome");
+        x.innerHTML = "New message come from "+msg.sender;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
+<!--        alert("New message from "+msg.sender);-->
         });
         $('#sendbutton').on('click',function() {
             var sender = "{{sender}}";

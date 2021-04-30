@@ -13,7 +13,7 @@
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
     <div class="header">
         <a href="index.html" id="select_color">Home</a>
         <a href="about.html" >About</a>
@@ -34,8 +34,12 @@
                 <div id="current_users">
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="user_profile/{{user['username']}}">{{user['username']}}</a><br/>
+                    <a href="user_profile/{{user['username']}}">{{user['username']}}</a>
+                    &nbsp;
+                    <a href="direct_chat/{{user['username']}}">chat</a>
+<!--                    <span id="new{{user['username']}}"> </span><br/>-->
                 {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -68,8 +72,6 @@
                     <hr>
                     {% if blog['filename'] %}
                     <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
-
-
                     {% endif %}
                     <p>{{blog['comment']}}</p><br/>
                 </div>
