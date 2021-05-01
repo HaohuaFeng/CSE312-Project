@@ -12,7 +12,7 @@ import sys
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
 db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-                    cursorclass=pymysql.cursors.DictCursor)
+                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -39,6 +39,7 @@ socketio = SocketIO(app)
 
 online_users = []
 users_icon = dict()
+
 
 @app.before_request
 def advance_session_timeout():
@@ -389,7 +390,7 @@ def handleMessage(msg):
         now = datetime.now()
         date = now.strftime("%m/%d/%Y %H:%M:%S")
         sql = "insert into message values (%s,%s,%s,%s);"
-        cur.execute(sql, (sender, receiver, message,date))
+        cur.execute(sql, (sender, receiver, message, date))
         db.commit()
 
         emit('privateMessage', {'sender': sender, 'receiver': receiver,
