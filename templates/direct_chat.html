@@ -32,9 +32,11 @@
 $(document).ready(function() {
    var socket = io();
    socket.on('privateMessage',function(msg) {
-        var history = document.getElementById("message").innerHTML;
+        var target = document.getElementById("message");
+        var history = target.innerHTML;
         history += "<div class='receiver_message' title=" + msg.sender + "--" + msg.date + ">" + msg.message + "</div>";
-        document.getElementById("message").innerHTML = history;
+        target.innerHTML = history;
+        target.scrollTop = target.scrollHeight;
 
 //      using Snackbar/Toast to notice user there is new message comes
 //      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
@@ -44,27 +46,37 @@ $(document).ready(function() {
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
     });
 
+    socket.on('notice', function(players) {
+        var y = document.getElementById("invitation");
+        y.innerHTML = "A game invitation come from "+ players.sender;
+        y.className = "show";
+        setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
+    });
+
     $('#sendbutton').on('click',function() {
         var sender = "{{sender}}";
         var receiver = "{{send_to}}";
         var message = $('#myMessage').val();
         if (message){
-            var history = document.getElementById("message").innerHTML;
+            var target = document.getElementById("message");
+            var history = target.innerHTML;
             message1 = message.replace(/&/g, '&amp;');
             message1 = message1.replace(/</g, '&lt;');
             message1 = message1.replace(/>/g, '&gt;');
             message1 = message1.replace(/"/g, '&quot;');
             message1 = message1.replace(/'/g, '&apos;');
             history += "<div class='sender_message' title=" + sender + ">" + message1 + "</div>";
-            document.getElementById("message").innerHTML = history;
+            target.innerHTML = history;
+            target.scrollTop = target.scrollHeight;
 
             socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
             $('#myMessage').val('');
         }
-   });
+    });
 });
 </script>
 <div class="description">Chatting with <a href="../user_profile/{{send_to}}">{{send_to}}</a></div>
+<hr/>
 <div class="direct_chat_container">
     <div class="direct_chat_box" id="message">
         {% for message in messages %}
@@ -77,7 +89,7 @@ $(document).ready(function() {
     </div>
 
     <div class="send_out">
-        <input type="text" id="myMessage" required>
+        <input type="text" id="myMessage">
         <button id="sendbutton">send</button>
     </div>
 </div>

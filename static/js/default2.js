@@ -34,14 +34,15 @@ $(document).ready(function() {
     });
 
     socket.on('blog_done', function(record) {
-        var history = document.getElementById('chat');
+        var history = document.getElementById('view_blog');
         response = "<div class='history'><p><a href='user_profile/" + record.user + "' class='profile'>" +
                     record.user + "</a> | " + record.date + "</p><hr>";
         if(record.filename){
             response += "<embed src='static/images/" + record.filename + "' type='"+ record.filetype + "' width='90%'>";
         }
         response += "<p>" + record.comment + "</p><br/></div>";
-        history.innerHTML += response;
+        response += history.innerHTML;
+        history.innerHTML = response;
     });
 
     socket.on('privateMessage',function(msg) {

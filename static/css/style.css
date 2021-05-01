@@ -58,29 +58,29 @@ button:hover {
     font-size: 25px;
 }
 input{
-  width: 300px;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
+    width: 300px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
 }
 input[type=submit], #clearDraw {
-  width: 150px;
-  margin: 10px 150px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  font-size: 20px;
+    width: 150px;
+    margin: 10px 150px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
 }
 input[type=reset]{
-  width: 150px;
-  margin: 10px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  font-size: 20px;
+    width: 150px;
+    margin: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
 }
 input[type=radio]{
-  width: 100px;
-  padding: 0;
-  font-size: 20px;
+    width: 100px;
+    padding: 0;
+    font-size: 20px;
 }
 textarea {
     font-size: 25px;
@@ -89,12 +89,12 @@ textarea {
 }
 
 input[type=submit]:hover{
-  color: white;
-  background-color: orange;
+    color: white;
+    background-color: orange;
 }
 input[type=reset]:hover{
-  color: white;
-  background-color: orange;
+    color: white;
+    background-color: orange;
 }
 
 .casualCase {
@@ -178,23 +178,22 @@ input[type=reset]:hover{
 }
 
 #newCome, #invitation {
-  visibility: hidden;
-  text-align: center;
-  background-color: cyan;
-  color: red;
-  text-shadow: 0.1em 0.1em 0.2em black;
-  font-size: 30px;
-  position: fixed;
-  z-index: 1;
-  left: 30%;
-  top: 30%;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 0 30px blue;
-
+    visibility: hidden;
+    text-align: center;
+    background-color: cyan;
+    color: red;
+    text-shadow: 0.1em 0.1em 0.2em black;
+    font-size: 30px;
+    position: fixed;
+    z-index: 1;
+    left: 30%;
+    top: 30%;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 0 30px blue;
 }
 #newCome.show, #invitation.show {
-  visibility: visible;
+    visibility: visible;
 }
 
 .direct_chat_container {
@@ -204,10 +203,10 @@ input[type=reset]:hover{
     position: relative;
     width: 800px;
     height: 600px;
-    border: 1px red solid;
+    border: 1px black solid;
     font-size: 25px;
-    border-radius: 20px;
     padding: 10px;
+    border-radius: 10px;
     overflow-y: scroll;
 }
 
@@ -215,7 +214,7 @@ input[type=reset]:hover{
     position: relative;
     background-color: #FC3;
     width: fit-content;
-    max-width: 400px;
+    max-width: 60%;
     word-wrap: break-word;
     text-align: right;
     padding: 5px 10px;
@@ -229,7 +228,7 @@ input[type=reset]:hover{
     position: relative;
     background-color: #9EEA6A;
     width: fit-content;
-    max-width: 400px;
+    max-width: 60%;
     word-wrap: break-word;
     text-align: right;
     padding: 5px 10px;
@@ -240,15 +239,15 @@ input[type=reset]:hover{
 }
 
 .send_out {
-   text-align: center;
+     text-align: center;
 }
 
-#sendbutton, #send_blog, #clearDraw, #invite {
-  width: 120px;
-  height: 50px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  font-size: 20px;
+#sendbutton, #send_blog, #clearDraw, #invite, #gameTextSend {
+    width: 120px;
+    height: 50px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
 }
 
 #drawBoard {
@@ -264,4 +263,24 @@ input[type=reset]:hover{
 .mini_icon {
     width: 35px;
     height: 35px;
+}
+
+.game {
+    float: left;
+}
+.gameChat {
+    height: 550px;
+    width: 480px;
+    float: right;
+}
+#gameMessage{
+    height: 500px;
+    border: 1px solid black;
+    overflow-y: scroll;
+}
+#gameMessage p {
+    padding: 10px 10px;
+}
+.gameChatMenu {
+    margin-left: 30px;
 }

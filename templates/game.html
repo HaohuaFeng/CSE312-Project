@@ -29,7 +29,6 @@
         <div class="description">Gaming with <a href="../user_profile/{{send_to}}">{{send_to}}</a>
         <button id="invite">Invite</button></div>
         <hr>
-
         <input type="color" id="color1" />Color bar <button id="clearDraw">Clear draw</button><br/>
 
  <script>
@@ -104,19 +103,55 @@
         setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
     });
 
-$(document).ready(function() {
-    $('#clearDraw').on('click',function() {
-      let oV3 = document.getElementById('drawBoard');
-      let gd3 = oV3.getContext('2d');
-      oV3.height = oV3.height;
-      socket.emit('clear1',{'height':oV3.height, 'receiver': '{{send_to}}'});
+    $(document).ready(function() {
+        $('#clearDraw').on('click',function() {
+          let oV3 = document.getElementById('drawBoard');
+          let gd3 = oV3.getContext('2d');
+          oV3.height = oV3.height;
+          socket.emit('clear1',{'height':oV3.height, 'receiver': '{{send_to}}'});
+    });
+
+    $('#gameTextSend').on('click',function() {
+        var sender = "{{sender}}";
+        var receiver = "{{send_to}}";
+        var message = $('#gameText').val();
+        if (message){
+            var target = document.getElementById("gameMessage");
+            var history = target.innerHTML;
+            message1 = message.replace(/&/g, '&amp;');
+            message1 = message1.replace(/</g, '&lt;');
+            message1 = message1.replace(/>/g, '&gt;');
+            message1 = message1.replace(/"/g, '&quot;');
+            message1 = message1.replace(/'/g, '&apos;');
+            history += "<div class='sender_message'>" + message1 + "</div>";
+            target.innerHTML = history;
+            target.scrollTop = target.scrollHeight;
+
+            socket.emit('gameChat',{'sender':sender, 'receiver':receiver, 'message':message});
+            $('#gameText').val('');
+        }
+    });
+
+    socket.on('gameChat2', function(msg) {
+        var target = document.getElementById("gameMessage");
+        var history = target.innerHTML;
+        history += "<div class='receiver_message'>" + msg.message + "</div>";
+        target.innerHTML = history;
+        target.scrollTop = target.scrollHeight;
     });
 });
 
  </script>
-
-        <canvas id="drawBoard" width="600" height="550"></canvas>
-
+        <div class="gameContainer">
+            <div class="game"><canvas id="drawBoard" width="600" height="550"></canvas></div>
+            <div class="gameChat">
+                <div id="gameMessage"></div>
+                <div class="gameChatMenu">
+                    <input type="text" id="gameText">
+                    <button id="gameTextSend">send</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

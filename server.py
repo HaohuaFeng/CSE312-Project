@@ -54,7 +54,7 @@ def hello_world():
         username = session['user']
     else:
         username = None
-    sql = "select * from blog"
+    sql = "select * from blog order by date desc"
     cur.execute(sql)
     blogs = cur.fetchall()
 
@@ -381,17 +381,6 @@ def directChat(send_to_user):
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
-# @app.route('/direct_chat')
-# def directChat2():
-#     if 'user' in session:
-#         user = session['user']
-#         return render_template("direct_chat.html", sender=user)
-#     else:
-#         redirecting = '<h3>Redirecting ... </h3>'
-#         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
-#         return "<h1>Please login first.</h1>" + redirecting + rd_fail
-
-
 @socketio.on('message')
 def handleMessage(msg):
     if 'user' in session:
@@ -458,17 +447,6 @@ def gaming(send_to_user):
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
-# @socketio.on('draw1')
-# def drawing(data):
-#     if 'user' in session:
-#         start_x = positions.get('startx')
-#         start_y = positions.get('starty')
-#         end_x = positions.get('endx')
-#         end_y = positions.get('endy')
-#         receiver = positions.get('guesser')
-#
-#         emit('show', {'startx': start_x, 'starty': start_y, 'endx': end_x, 'endy': end_y, 'guesser': receiver}, room=receiver)
-
 @socketio.on('draw1')
 def handleDraw(data):
     initX = data.get('initX')
@@ -496,6 +474,15 @@ def handleClear(data):
     height = data.get('height')
     receiver = data.get('receiver')
     emit('clear2', {'height': height}, room=receiver)
+
+
+@socketio.on('gameChat')
+def gameChat(msg):
+    if 'user' in session:
+        sender = msg.get('sender')
+        receiver = msg.get('receiver')
+        message = msg.get('message')
+        emit('gameChat2', {'sender': sender, 'receiver': receiver, 'message': escape(message)}, room=receiver)
 
 
 if __name__ == "__main__":

@@ -71,17 +71,18 @@
             <div class="view_blog">
                 <h2>Shared moments!</h2>
                 <hr>
-                {% for blog in blogs %}
-                <div class="history">
-                    <p><a href="user_profile/{{blog['username']}}" class="profile">{{blog['username']}}</a> | {{blog['date']}}</p>
-                    <hr>
-                    {% if blog['filename'] %}
-                    <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
-                    {% endif %}
-                    <p>{{blog['comment']}}</p><br/>
+                <div id="view_blog">
+                    {% for blog in blogs %}
+                    <div class="history">
+                        <p><a href="user_profile/{{blog['username']}}" class="profile">{{blog['username']}}</a> | {{blog['date']}}</p>
+                        <hr>
+                        {% if blog['filename'] %}
+                        <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
+                        {% endif %}
+                        <p>{{blog['comment']}}</p><br/>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-                <div id="chat"></div>
             </div>
         </div>
 
