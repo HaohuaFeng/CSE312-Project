@@ -243,16 +243,12 @@ input[type=reset]:hover{
    text-align: center;
 }
 
-#sendbutton, #send_blog, #clearDraw {
+#sendbutton, #send_blog, #clearDraw, #invite {
   width: 120px;
   height: 50px;
   box-sizing: border-box;
   border-radius: 10px;
   font-size: 20px;
-}
-
-#sendbutton:hover{
-  background-color: orange;
 }
 
 #drawBoard {

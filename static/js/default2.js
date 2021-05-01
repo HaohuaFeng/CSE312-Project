@@ -20,8 +20,8 @@ $(document).ready(function() {
         var users = document.getElementById('current_users');
         var all_users = users.innerHTML;
         if (!all_users.includes(user.username)){
-            var new_user = '<img src="static/images/' + user.icon + '" width=50/>';
-            new_user += '<a href="user_profile/' + user.username + '" class="profile"> ' + user.username + '</a>';
+            var new_user = '<a href="user_profile/' + user.username + '" class="profile">'
+            new_user += '<img src="static/images/' + user.icon + '" width=50/>' + user.username + '</a>';
             new_user += '&nbsp;&nbsp;&nbsp;';
             new_user += '<a href="direct_chat/' + user.username + '"><img src="static/images/msg1.png" ' +
                         'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
@@ -114,8 +114,8 @@ function renderUsers(rawUsers) {
     list.innerHTML = "";
     var users = JSON.parse(rawUsers);
     for (i = 0; i < users.length; i++){
-        var new_user = '<img src="static/images/' + users[i]['icon'] + '" width=50/>';
-        new_user += '<a href="user_profile/' + users[i].username + '" class="profile"> ' + users[i].username + '</a>';
+        var new_user = '<a href="user_profile/' + users[i].username + '" class="profile">'
+        new_user += '<img src="static/images/' + users[i].icon + '" width=50/>' + users[i].username + '</a>';
         new_user += '&nbsp;&nbsp;&nbsp;';
         new_user += '<a href="direct_chat/' + users[i].username + '"><img src="static/images/msg1.png" ' +
                     'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
