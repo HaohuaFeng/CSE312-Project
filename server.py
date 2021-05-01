@@ -37,7 +37,6 @@ socketio = SocketIO(app)
 
 online_users = []
 
-
 @app.before_request
 def advance_session_timeout():
     session.permanent = False
