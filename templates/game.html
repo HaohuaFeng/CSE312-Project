@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Name</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
+<!--    <script src="../static/js/default.js" charset="utf-8"></script>-->
+
+</head>
+<body>
+    <h1>Project Name</h1>
+    <div id="newCome"></div>
+    <div id="invitation"></div>
+    <div class="header">
+        <a href="/index.html" >Home</a>
+        <a href="/about.html" >About</a>
+        <a href="/register.html">Register</a>
+        {% if sender %}
+        <a href="/profile.html" class="profile" id="select_color">{{sender}}</a>
+        <a href="/logout">Logout</a>
+        {% else %}
+        <a href="/login.html">Login</a>
+        {% endif %}
+    </div>
+    <div class="main">
+        <div class="description">Gaming with <a href="../user_profile/{{send_to}}">{{send_to}}</a>
+        <button id="invite">Invite</button></div>
+        <hr>
+        <input type="color" id="color1" />Color bar <button id="clearDraw">Clear draw</button><br/>
+
+ <script>
+    var socket = io();
+    socket.on('privateMessage',function(msg) {
+//      using Snackbar/Toast to notice user there is new message comes
+//      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
+        var x = document.getElementById("newCome");
+        x.innerHTML = "New message come from "+msg.sender;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
+    });
+
+    window.onload=function () {
+       let oV=document.getElementById('drawBoard');
+       let gd=oV.getContext('2d');
+       let oColor=document.getElementById('color1');
+       let color;
+       oColor.onchange=function () {
+            color=this.value;
+       }
+       let initX,initY;
+       oV.onmousedown=function (ev) {
+            initX=ev.offsetX;
+            initY=ev.offsetY;
+            oV.onmousemove=function (ev) {
+                 gd.beginPath();
+                 gd.moveTo(initX,initY);
+                 gd.lineTo(ev.offsetX,ev.offsetY);
+                 lastX=ev.offsetX;
+                 lastY=ev.offsetY;
+                 gd.strokeStyle=color;
+                 gd.stroke();
+                 socket.emit('draw1',{'initX':initX, 'initY':initY,'lastX':lastX,'lastY':lastY,'color':color, 'receiver': '{{send_to}}'});
+                 initX=lastX;
+                 initY=lastY;
+            }
+            oV.onmouseup=function () {
+              oV.onmousemove=null;
+              oV.onmouseup=null;
+            }
+       }
+    } //window.onload
+
+    socket.on('draw2',function(data) {
+       let oV2=document.getElementById('drawBoard');
+       let gd2=oV2.getContext('2d');
+       gd2.beginPath();
+       gd2.moveTo(data.initX,data.initY);
+       gd2.lineTo(data.lastX,data.lastY);
+       gd2.lineCap = 'round';
+       gd2.strokeStyle=data.color;
+       gd2.stroke();
+    });
+
+    socket.on('clear2',function(data) {
+       let oV4=document.getElementById('drawBoard');
+       let gd4=oV4.getContext('2d');
+       oV4.height = data.height;
+    });
+
+    $('#invite').on('click',function() {
+        var sender = "{{sender}}";
+        var receiver = "{{send_to}}";
+        socket.emit('invite',{'sender':sender, 'receiver':receiver});
+    });
+
+    socket.on('notice', function(players) {
+        var y = document.getElementById("invitation");
+        y.innerHTML = "A game invitation come from "+ players.sender;
+        y.className = "show";
+        setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
+    });
+
+    $(document).ready(function() {
+        $('#clearDraw').on('click',function() {
+          let oV3 = document.getElementById('drawBoard');
+          let gd3 = oV3.getContext('2d');
+          oV3.height = oV3.height;
+          socket.emit('clear1',{'height':oV3.height, 'receiver': '{{send_to}}'});
+    });
+
+    $('#gameTextSend').on('click',function() {
+        var sender = "{{sender}}";
+        var receiver = "{{send_to}}";
+        var message = $('#gameText').val();
+        if (message){
+            var target = document.getElementById("gameMessage");
+            var history = target.innerHTML;
+            message1 = message.replace(/&/g, '&amp;');
+            message1 = message1.replace(/</g, '&lt;');
+            message1 = message1.replace(/>/g, '&gt;');
+            message1 = message1.replace(/"/g, '&quot;');
+            message1 = message1.replace(/'/g, '&apos;');
+            history += "<div class='sender_message'>" + message1 + "</div>";
+            target.innerHTML = history;
+            target.scrollTop = target.scrollHeight;
+
+            socket.emit('gameChat',{'sender':sender, 'receiver':receiver, 'message':message});
+            $('#gameText').val('');
+        }
+    });
+
+    socket.on('gameChat2', function(msg) {
+        var target = document.getElementById("gameMessage");
+        var history = target.innerHTML;
+        history += "<div class='receiver_message'>" + msg.message + "</div>";
+        target.innerHTML = history;
+        target.scrollTop = target.scrollHeight;
+    });
+});
+
+ </script>
+        <div class="gameContainer">
+            <div class="game"><canvas id="drawBoard" width="600" height="550"></canvas></div>
+            <div class="gameChat">
+                <div id="gameMessage"></div>
+                <div class="gameChatMenu">
+                    <input type="text" id="gameText">
+                    <button id="gameTextSend">send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,6 +12,7 @@ services:
 
   app:
     build: .
+    restart: always
     container_name: faceNote
     links:
       - db
@@ -19,6 +20,6 @@ services:
       WAIT_HOSTS: db:3306
       MYSQL_PASSWORD: changeme
     ports:
-      - '8080:8000'
+      - '80:8000'
 volumes:
   db_file: {}

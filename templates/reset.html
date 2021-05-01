@@ -5,29 +5,30 @@
     <meta charset="UTF-8">
     <title>Project Name</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
     <script src="../static/js/default.js" charset="utf-8"></script>
     <script src="../static/js/reset_check.js" charset="utf-8"></script>
 </head>
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
         <a href="index.html" >Home</a>
         <a href="about.html" >About</a>
         <a href="register.html" >Register</a>
         {% if user %}
-        <a href="profile.html" class="profile">{{user}}</a>
+        <a href="profile.html" class="profile" id="select_color">{{user}}</a>
         <a href="/logout">Logout</a>
         {% else %}
-        <a href="login.html" id="select_color">Login</a>
+        <a href="login.html">Login</a>
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">This is Login Page, get back into your account </div>
+        <div class="description">This is Reset Page, you can change password. </div>
         <hr>
         <div class="login">
             <form method="post">
@@ -37,14 +38,14 @@
                 <input type="password" name="old_password" id="old_password" required><br>
                 <label for="new_password">New password:</label>
                 <input type="password" name="new_password" id="new_password" required onkeyup="password_validation(); check_password_match()">
-                <span id="valid_pw"></span><br>
+                <span id="valid_pw"></span><br><br>
                 <label for="cnew_password">Confirm your new password:</label>
                 <input type="password" name="cnew_password" id="cnew_password" required onkeyup="check_password_match()">
                 <span id="checkpw"></span><br>
-                <input type="submit" id="submit" value="Next">
+                <input type="submit" id="submit" value="Confirm">
             </form>
         </div>
-        <p class="casualCase"><a href="login.html">Cancel</a></p>
+        <button class="casualCase"><a href="profile.html">Cancel</a></button>
     </div>
 </body>
 </html>

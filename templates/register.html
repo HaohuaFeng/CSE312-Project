@@ -5,16 +5,17 @@
     <meta charset="UTF-8">
     <title>Project Name</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
     <script src="../static/js/default.js" charset="utf-8"></script>
     <script src="../static/js/register_check.js" charset="utf-8"></script>
 </head>
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
@@ -37,7 +38,7 @@
                 <input type="email" name="email" id="email" required><br>
                 <label for="password">Password :</label>
                 <input type="password" name="password" id="password" required onkeyup="password_validation(); check_password_match()">
-                <span id="valid_pw"></span><br>
+                <span id="valid_pw"></span><br><br>
                 <label for="pcheck">Confirm Password: </label>
                 <input type="password" name="pcheck" id="pcheck" required onkeyup="check_password_match()">
                 <span id="checkpw"></span><br>

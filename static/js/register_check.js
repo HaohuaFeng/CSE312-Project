@@ -46,11 +46,11 @@ function password_validation(){
     let specialChar = false
     const lenRequire = "length >= 8; "
     const lowRequire = "1 lowercase letter; "
-    const upperRequire= "1 uppercase letter; "
+    const upperRequire= "1 upperRequire letter; "
     const specialRequire = "1 special character; "
-    const numRequire = "1 number character; "
+    const numRequire = "1 number character;"
     let strong = 0
-    let return_msg = " ❌ "
+    let return_msg = ""
     if (length < 8){
         return_msg += lenRequire
     } else{

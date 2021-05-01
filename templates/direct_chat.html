@@ -4,68 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Project Name</title>
+
     <link rel="stylesheet" href="../static/css/style.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="../static/js/default.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
+<!--    <script src="../static/js/default.js" charset="utf-8"></script>-->
 </head>
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
-        <a href="/index.html" id="select_color">Home</a>
+        <a href="/index.html">Home</a>
         <a href="/about.html" >About</a>
         <a href="/register.html" >Register</a>
         {% if sender %}
-        <a href="/profile.html" class="profile">{{sender}}</a>
+        <a href="/profile.html" class="profile" id="select_color">{{sender}}</a>
         <a href="/logout">Logout</a>
         {% else %}
         <a href="/login.html">Login</a>
         {% endif %}
     </div>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
-<script
-              src="http://code.jquery.com/jquery-3.2.1.min.js"
-              integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-              crossorigin="anonymous"></script>
-
-<script type="text/javascript">
-
+<script>
 $(document).ready(function() {
    var socket = io();
-<!--       socket.on('connect', function() {-->
-<!--        socket.emit('connect','{{sender}} has connected!');-->
-<!--       });-->
-       socket.on('privateMessage',function(msg) {
-        $("#messages").append('<li>'+msg.sender+' send to '+ msg.receiver + ': '+ msg.message+   '</li>');
-        console.log('received message');
-        alert("New message from "+msg.sender);
-        });
-        $('#sendbutton').on('click',function() {
-            var sender = "{{sender}}";
-            console.log(sender);
-            var receiver = "{{send_to}}";
-            console.log(receiver);
-            var message = $('#myMessage').val();
-            console.log(message);
-            $("#messages").append('<li>'+sender+' send to '+ receiver + ': '+ message+   '</li>');
+   socket.on('privateMessage',function(msg) {
+        var target = document.getElementById("message");
+        var history = target.innerHTML;
+        history += "<div class='receiver_message' title=" + msg.sender + "--" + msg.date + ">" + msg.message + "</div>";
+        target.innerHTML = history;
+        target.scrollTop = target.scrollHeight;
+
+//      using Snackbar/Toast to notice user there is new message comes
+//      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
+        var x = document.getElementById("newCome");
+        x.innerHTML = "New message come from "+ msg.sender;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
+    });
+
+    socket.on('notice', function(players) {
+        var y = document.getElementById("invitation");
+        y.innerHTML = "A game invitation come from "+ players.sender;
+        y.className = "show";
+        setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
+    });
+
+    $('#sendbutton').on('click',function() {
+        var sender = "{{sender}}";
+        var receiver = "{{send_to}}";
+        var message = $('#myMessage').val();
+        if (message){
+            var target = document.getElementById("message");
+            var history = target.innerHTML;
+            message1 = message.replace(/&/g, '&amp;');
+            message1 = message1.replace(/</g, '&lt;');
+            message1 = message1.replace(/>/g, '&gt;');
+            message1 = message1.replace(/"/g, '&quot;');
+            message1 = message1.replace(/'/g, '&apos;');
+            history += "<div class='sender_message' title=" + sender + ">" + message1 + "</div>";
+            target.innerHTML = history;
+            target.scrollTop = target.scrollHeight;
+
             socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
             $('#myMessage').val('');
-       });
-       });
+        }
+    });
+});
 </script>
-{% for message in messages %}
-<li>{{message['sender']}} send to {{message['receiver']}}: {{message['message']}}</li>
+<div class="description">Chatting with <a href="../user_profile/{{send_to}}">{{send_to}}</a></div>
+<hr/>
+<div class="direct_chat_container">
+    <div class="direct_chat_box" id="message">
+        {% for message in messages %}
+            {% if message['sender']== sender  %}
+                <div class="sender_message" title="{{sender}}--{{message['date']}}">{{message['message']}}</div>
+            {% else %}
+                <div class="receiver_message" title="{{send_to}}--{{message['date']}}">{{message['message']}}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
 
-{% endfor %}
-
-
-<ul id="messages"></ul>
-    <input type="text" id="myMessage">
-    <button id="sendbutton">send</button>
-
+    <div class="send_out">
+        <input type="text" id="myMessage">
+        <button id="sendbutton">send</button>
+    </div>
+</div>
 </body>
 </html>

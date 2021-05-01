@@ -5,15 +5,16 @@
     <meta charset="UTF-8">
     <title>Project Name</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.2/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
     <script src="../static/js/default2.js" charset="utf-8"></script>
 </head>
 
 <body>
     <h1>Project Name</h1>
-
+    <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
         <a href="index.html" id="select_color">Home</a>
         <a href="about.html" >About</a>
@@ -24,7 +25,6 @@
         {% else %}
         <a href="login.html">Login</a>
         {% endif %}
-        <a id="unread" href="direct_chat" > </a>
     </div>
     <div class="main">
         <div class="description">This is Homepage</div>
@@ -32,11 +32,20 @@
         <div class="left_col">
             <div class="online_user">
                 <h2>Online Users:</h2>
+                <hr>
                 <div id="current_users">
                 {% for user in users %}
-                    <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="user_profile/{{user['username']}}">{{user['username']}}</a><br/>
+                    <a href="user_profile/{{user['username']}}" class="profile">
+                        <img src="static/images/{{user['icon']}}" width=50/>{{user['username']}}</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="direct_chat/{{user['username']}}"><img src="static/images/msg1.png"
+                             onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="game/{{user['username']}}"><img src="static/images/game1.png"
+                             onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
+                    <br>
                 {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -46,12 +55,12 @@
                 <h2>Welcome <a href="profile.html" class="profile">{{user}}</a>，share your great moment!</h2>
                 <hr>
 
-                <label for="form-file">Image: </label>
+                <label for="form-file">File: </label>
                 <input id="form-file" type="file" name="upload">
                 <br/>
                 <label for="comment">Comment: </label><br/>
                 <input id="comment"  name="comment" placeholder="Write some comment ..." required>
-                <button type="button" >Send</button>
+                <button type="button" id="send_blog">Send</button>
 
                 {% else %}
                 You are not logged yet，<a href="login.html">Please login first</a>
@@ -61,21 +70,19 @@
 
             <div class="view_blog">
                 <h2>Shared moments!</h2>
-
                 <hr>
-                {% for blog in blogs %}
-                <div class="history">
-                    <p>Uploaded by {{blog['username']}} by date: {{blog['date']}}</p>
-                    <hr>
-                    {% if blog['filename'] %}
-                    <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
-
-
-                    {% endif %}
-                    <p>Description: {{blog['comment']}}</p><br/>
+                <div id="view_blog">
+                    {% for blog in blogs %}
+                    <div class="history">
+                        <p><a href="user_profile/{{blog['username']}}" class="profile">{{blog['username']}}</a> | {{blog['date']}}</p>
+                        <hr>
+                        {% if blog['filename'] %}
+                        <embed src="static/images/{{blog['filename']}}" type="{{blog['filetype']}}" width="90%">
+                        {% endif %}
+                        <p>{{blog['comment']}}</p><br/>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-                <div id="chat"></div>
             </div>
         </div>
 
