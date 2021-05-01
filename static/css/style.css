@@ -45,12 +45,19 @@ button:hover {
 .main {
     width: 1100px;
     font-size: 20px;
+    min-height: 640px;
 }
-
+.footer {
+    position: relative;
+    margin-left: 350px;
+    font-size: 25px;
+    bottom: -80px;
+    z-index: -1;
+}
 .description {
     line-height: 50px;
     font-size: 30px;
-    padding: 20px 10px;
+    padding: 15px 10px;
 }
 
 .login form, .register form, .sub_blog, .update_profile{
@@ -115,13 +122,13 @@ input[type=reset]:hover{
 }
 
 .left_col {
-    width: 300px;;
+    width: 320px;;
     float: left;
     padding: 10px 10px;
 }
 
 .right_col {
-    width: 750px;
+    width: 730px;
     float: right;
     padding: 10px 10px;
 }
@@ -202,7 +209,7 @@ input[type=reset]:hover{
 .direct_chat_box {
     position: relative;
     width: 800px;
-    height: 600px;
+    height: 550px;
     border: 1px black solid;
     font-size: 25px;
     padding: 10px;
@@ -269,12 +276,12 @@ input[type=reset]:hover{
     float: left;
 }
 .gameChat {
-    height: 550px;
+    height: 500px;
     width: 480px;
     float: right;
 }
 #gameMessage{
-    height: 500px;
+    height: 450px;
     border: 1px solid black;
     overflow-y: scroll;
 }
@@ -284,3 +291,5 @@ input[type=reset]:hover{
 .gameChatMenu {
     margin-left: 30px;
 }
+
+
