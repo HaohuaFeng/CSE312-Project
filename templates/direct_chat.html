@@ -15,6 +15,7 @@
 <body>
     <h1>Project Name</h1>
     <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
         <a href="/index.html">Home</a>
         <a href="/about.html" >About</a>
@@ -30,8 +31,7 @@
 <script>
 $(document).ready(function() {
    var socket = io();
-       socket.on('privateMessage',function(msg) {
-
+   socket.on('privateMessage',function(msg) {
         var history = document.getElementById("message").innerHTML;
         history += "<div class='receiver_message' title=" + msg.sender + "--" + msg.date + ">" + msg.message + "</div>";
         document.getElementById("message").innerHTML = history;
@@ -42,26 +42,26 @@ $(document).ready(function() {
         x.innerHTML = "New message come from "+ msg.sender;
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 10000);
-        });
+    });
 
-        $('#sendbutton').on('click',function() {
-            var sender = "{{sender}}";
-            var receiver = "{{send_to}}";
-            var message = $('#myMessage').val();
-            if (message){
-                var history = document.getElementById("message").innerHTML;
-                message1 = message.replace(/&/g, '&amp;');
-                message1 = message1.replace(/</g, '&lt;');
-                message1 = message1.replace(/>/g, '&gt;');
-                message1 = message1.replace(/"/g, '&quot;');
-                message1 = message1.replace(/'/g, '&apos;');
-                history += "<div class='sender_message' title=" + sender + ">" + message1 + "</div>";
-                document.getElementById("message").innerHTML = history;
+    $('#sendbutton').on('click',function() {
+        var sender = "{{sender}}";
+        var receiver = "{{send_to}}";
+        var message = $('#myMessage').val();
+        if (message){
+            var history = document.getElementById("message").innerHTML;
+            message1 = message.replace(/&/g, '&amp;');
+            message1 = message1.replace(/</g, '&lt;');
+            message1 = message1.replace(/>/g, '&gt;');
+            message1 = message1.replace(/"/g, '&quot;');
+            message1 = message1.replace(/'/g, '&apos;');
+            history += "<div class='sender_message' title=" + sender + ">" + message1 + "</div>";
+            document.getElementById("message").innerHTML = history;
 
-                socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
-                $('#myMessage').val('');
-            }
-       });
+            socket.emit('message',{'sender':sender, 'receiver':receiver, 'message':message});
+            $('#myMessage').val('');
+        }
+   });
 });
 </script>
 <div class="description">Chatting with <a href="../user_profile/{{send_to}}">{{send_to}}</a></div>

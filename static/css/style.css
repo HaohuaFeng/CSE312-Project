@@ -173,7 +173,7 @@ input[type=reset]:hover{
     width: 840px;
 }
 
-#newCome {
+#newCome, #invitation {
   visibility: hidden;
   text-align: center;
   background-color: cyan;
@@ -189,7 +189,7 @@ input[type=reset]:hover{
   box-shadow: 0 0 30px blue;
 
 }
-#newCome.show {
+#newCome.show, #invitation.show {
   visibility: visible;
 }
 

@@ -14,6 +14,7 @@
 <body>
     <h1>Project Name</h1>
     <div id="newCome"></div>
+    <div id="invitation"></div>
     <div class="header">
         <a href="index.html" id="select_color">Home</a>
         <a href="about.html" >About</a>
@@ -34,8 +35,9 @@
                 <div id="current_users">
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}}</a>
-                    <a href="direct_chat/{{user['username']}}">Chat</a>
+                    <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}} </a>
+                    <a href="direct_chat/{{user['username']}}"> Chat </a>
+                    <a href="game/{{user['username']}}"> Game </a><br>
                 {% endfor %}
 
                 </div>

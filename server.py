@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify, escape
 import pymysql
 import os
 import bcrypt
@@ -11,7 +11,7 @@ import sys
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root',  charset='utf8mb4',
+db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
@@ -69,11 +69,11 @@ def hello_world():
         temp['username'] = user
         temp['icon'] = users_icon[user]
         users_login.append(temp)
-    print("online_users")
-    print(online_users)
-    print("users_login")
-    print(users_login)
-    sys.stdout.flush()
+    # print("online_users")
+    # print(online_users)
+    # print("users_login")
+    # print(users_login)
+    # sys.stdout.flush()
 
     if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
@@ -127,7 +127,6 @@ def display(message):
     else:
         username = None
     comment = message['comment']
-
     file_name = ''
     file_type = ''
     if 'file' in message.keys():
@@ -147,6 +146,8 @@ def display(message):
     sql = "insert into blog values (%s,%s,%s,%s,%s)"
     cur.execute(sql, (file_name, file_type, comment, username, date))
     db.commit()
+
+    comment = escape(comment)
 
     emit('blog_done',
          {'user': username, 'date': date, 'comment': comment, 'filename': file_name, 'filetype': file_type},
@@ -170,8 +171,8 @@ def login():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
@@ -200,8 +201,8 @@ def reset():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="reset.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/reset.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
         if new_password != cnew_password:
@@ -234,8 +235,8 @@ def forgot():
         cur.execute(sql, (username,))
         name = cur.fetchone()
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="forgot.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 5000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/forgot.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 5000);</script>'
         if name is None:
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
 
@@ -261,7 +262,7 @@ def logout():
             online_users.remove(session['user'])
         session.pop('user', None)
     redirecting = '<h3>Redirecting ... </h3>'
-    rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+    rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
     return "<h1>You have logout successfully.</h1>" + redirecting + rd_suc
 
 
@@ -279,9 +280,9 @@ def register():
         name = cur.fetchone()
         ex = 0
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="register.html";}, 3000);</script>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-        rd_suc2 = '<script>setTimeout(function(){window.location.href="index.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/register.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        rd_suc2 = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
         if name is None:
             ex = 1
         if password != password_check:
@@ -335,7 +336,7 @@ def profile():
         users_icon[session['user']] = icon_name
 
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_suc = '<script>setTimeout(function(){window.location.href="profile.html";}, 3000);</script>'
+        rd_suc = '<script>setTimeout(function(){window.location.href="/profile.html";}, 3000);</script>'
 
         return "<h1>You have updated your profile successfully.</h1>" + redirecting + rd_suc
 
@@ -358,7 +359,7 @@ def profile():
 
     else:
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
@@ -376,19 +377,19 @@ def directChat(send_to_user):
         return render_template("direct_chat.html", sender=sender, send_to=send_to_user, messages=messages)
     else:
         redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
-@app.route('/direct_chat')
-def directChat2():
-    if 'user' in session:
-        user = session['user']
-        return render_template("direct_chat.html", sender=user)
-    else:
-        redirecting = '<h3>Redirecting ... </h3>'
-        rd_fail = '<script>setTimeout(function(){window.location.href="login.html";}, 3000);</script>'
-        return "<h1>Please login first.</h1>" + redirecting + rd_fail
+# @app.route('/direct_chat')
+# def directChat2():
+#     if 'user' in session:
+#         user = session['user']
+#         return render_template("direct_chat.html", sender=user)
+#     else:
+#         redirecting = '<h3>Redirecting ... </h3>'
+#         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+#         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @socketio.on('message')
@@ -403,7 +404,8 @@ def handleMessage(msg):
         cur.execute(sql, (sender, receiver, message,date))
         db.commit()
 
-        emit('privateMessage', {'sender': sender, 'receiver': receiver, 'message': message, 'date': date}, room=receiver)
+        emit('privateMessage', {'sender': sender, 'receiver': receiver,
+                                'message': escape(message), 'date': date}, room=receiver)
 
 
 @app.route('/user_profile/<look_user>')
@@ -441,13 +443,31 @@ def check_user_exist():
     return jsonify(result)
 
 
-@app.route('/game')
-@app.route('/game.html')
-def game():
+@app.route('/game/<send_to_user>')
+def gaming(send_to_user):
     if 'user' in session:
-        user = session['user']
-        return render_template("game.html", user=user)
-    return render_template("game.html")
+        if session['user'] == send_to_user:
+            return redirect(url_for("profile"))
+
+        sender = session['user']
+
+        return render_template("game.html", sender=sender, send_to=send_to_user)
+    else:
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        return "<h1>Please login first.</h1>" + redirecting + rd_fail
+
+
+# @socketio.on('draw1')
+# def drawing(data):
+#     if 'user' in session:
+#         start_x = positions.get('startx')
+#         start_y = positions.get('starty')
+#         end_x = positions.get('endx')
+#         end_y = positions.get('endy')
+#         receiver = positions.get('guesser')
+#
+#         emit('show', {'startx': start_x, 'starty': start_y, 'endx': end_x, 'endy': end_y, 'guesser': receiver}, room=receiver)
 
 @socketio.on('draw1')
 def handleDraw(data):
@@ -456,15 +476,26 @@ def handleDraw(data):
     lastX = data.get('lastX')
     lastY = data.get('lastY')
     color = data.get('color')
+    receiver = data.get('receiver')
     # print("x: " + str(data.get('axis_X')))
     # print("y: " + str(data.get('axis_Y')))
-    emit('draw2', {'initX': initX, 'initY': initY, 'lastX':lastX,'lastY':lastY,'color':color}, broadcast=True)
+    emit('draw2', {'initX': initX, 'initY': initY, 'lastX': lastX, 'lastY': lastY,
+                   'color': color, 'receiver': receiver}, room=receiver)
+
+
+@socketio.on('invite')
+def invite(players):
+    if 'user' in session:
+        sender = players.get('sender')
+        receiver = players.get('receiver')
+        emit('notice', {'sender': sender, 'receiver': receiver}, room=receiver)
+
 
 @socketio.on('clear1')
 def handleClear(data):
     height = data.get('height')
-    emit('clear2', {'height':height}, broadcast=True)
-
+    receiver = data.get('receiver')
+    emit('clear2', {'height': height}, room=receiver)
 
 
 if __name__ == "__main__":
