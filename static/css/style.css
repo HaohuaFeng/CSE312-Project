@@ -250,3 +250,8 @@ input[type=reset]:hover{
 #sendbutton:hover{
   background-color: orange;
 }
+
+#drawBoard {
+    background:white;
+    border: 1px solid;
+}
