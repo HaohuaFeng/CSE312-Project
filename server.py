@@ -402,6 +402,10 @@ def userProfile(look_user):
     sql = "select * from user where username = (%s)"
     cur.execute(sql, (look_user,))
     look_user1 = cur.fetchone()
+    if look_user1 is None:
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
+        return "<h1>This username does not exist.</h1>" + redirecting + rd_fail
     if 'user' in session:
         user = session['user']
         if user == look_user:
@@ -420,16 +424,21 @@ def check_user_exist():
         result["display"] = "<font color='red'> ❌ Empty Username</font>"
         return jsonify(result)
     if username:
-        sql = "select * from user where username = (%s)"
-        cur.execute(sql, (username,))
-        user = cur.fetchone()
-        if user:
+        if len(username) < 3:
             result["exists"] = True
-            result["display"] = "<font color='red'> ❌ username \"" + username + "\" has been taken</font>"
+            result["display"] = "<font color='red'> ❌ Too short username</font>"
+            return jsonify(result)
         else:
-            result["exists"] = False
-            result["display"] = "<font color='green'> ✔ </font>"
-    return jsonify(result)
+            sql = "select * from user where username = (%s)"
+            cur.execute(sql, (username,))
+            user = cur.fetchone()
+            if user:
+                result["exists"] = True
+                result["display"] = "<font color='red'> ❌ username \"" + username + "\" has been taken</font>"
+            else:
+                result["exists"] = False
+                result["display"] = "<font color='green'> ✔ </font>"
+            return jsonify(result)
 
 
 @app.route('/game/<send_to_user>')
