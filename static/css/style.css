@@ -16,6 +16,10 @@ a {
     margin: 20px 2px;
 }
 
+button:hover {
+    background-color: orange;
+}
+
 #select_color {
     color: white;
     background-color: orange;
@@ -59,7 +63,7 @@ input{
   margin: 8px 0;
   box-sizing: border-box;
 }
-input[type=submit] {
+input[type=submit], #clearDraw {
   width: 150px;
   margin: 10px 150px;
   box-sizing: border-box;
@@ -239,9 +243,9 @@ input[type=reset]:hover{
    text-align: center;
 }
 
-#sendbutton, #send_blog {
-  width: 100px;
-  height: 40px;
+#sendbutton, #send_blog, #clearDraw {
+  width: 120px;
+  height: 50px;
   box-sizing: border-box;
   border-radius: 10px;
   font-size: 20px;
@@ -254,4 +258,14 @@ input[type=reset]:hover{
 #drawBoard {
     background:white;
     border: 1px solid;
+}
+
+#color1 {
+    width: 250px;
+    height:  60px;
+}
+
+.mini_icon {
+    width: 35px;
+    height: 35px;
 }

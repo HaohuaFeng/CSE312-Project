@@ -35,9 +35,14 @@
                 <div id="current_users">
                 {% for user in users %}
                     <img src="static/images/{{user['icon']}}" width=50/>
-                    <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}} </a>
-                    <a href="direct_chat/{{user['username']}}"> Chat </a>
-                    <a href="game/{{user['username']}}"> Game </a><br>
+                    <a href="user_profile/{{user['username']}}" class="profile">{{user['username']}}</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="direct_chat/{{user['username']}}"><img src="static/images/msg1.png"
+                             onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="game/{{user['username']}}"><img src="static/images/game1.png"
+                             onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
+                    <br>
                 {% endfor %}
 
                 </div>
