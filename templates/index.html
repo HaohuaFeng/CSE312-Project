@@ -12,11 +12,12 @@
 </head>
 
 <body>
-    <h1>Project Name</h1>
+    <h1>FaceNote</h1>
     <div id="newCome"></div>
     <div id="invitation"></div>
     <div class="header">
         <a href="index.html" id="select_color">Home</a>
+        <a href="game.html" >Game</a>
         <a href="about.html" >About</a>
         <a href="register.html" >Register</a>
         {% if user %}
@@ -27,7 +28,7 @@
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">Home Page</div>
+        <div class="description">Home page</div>
         <hr>
         <div class="left_col">
             <div class="online_user">
@@ -40,9 +41,9 @@
                     &nbsp;&nbsp;&nbsp;
                     <a href="direct_chat/{{user['username']}}"><img src="static/images/msg1.png"
                              onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href="game/{{user['username']}}"><img src="static/images/game1.png"
-                             onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
+<!--                    &nbsp;&nbsp;&nbsp;-->
+<!--                    <a href="game/{{user['username']}}"><img src="static/images/game1.png"-->
+<!--                             onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>-->
                     <br>
                 {% endfor %}
 

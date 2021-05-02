@@ -11,23 +11,24 @@
 
 </head>
 <body>
-    <h1>Project Name</h1>
+    <h1>FaceNote</h1>
     <div id="newCome"></div>
     <div id="invitation"></div>
     <div class="header">
         <a href="/index.html" >Home</a>
+        <a href="game.html" id="select_color">Game</a>
         <a href="/about.html" >About</a>
         <a href="/register.html">Register</a>
         {% if sender %}
-        <a href="/profile.html" class="profile" id="select_color">{{sender}}</a>
+        <a href="/profile.html" class="profile">{{sender}}</a>
         <a href="/logout">Logout</a>
         {% else %}
         <a href="/login.html">Login</a>
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">Gaming with <a href="../user_profile/{{send_to}}">{{send_to}}</a>
-        <button id="invite">Invite</button></div>
+        <div class="description">Game Room.
+        <button id="invite">Invite All Users</button></div>
         <hr>
         <input type="color" id="color1" />Color bar <button id="clearDraw">Clear draw</button><br/>
 
@@ -35,7 +36,6 @@
     var socket = io();
 
     var sender = "{{sender}}";
-    var receiver = "{{send_to}}";
 
     socket.on('privateMessage',function(msg) {
 //      using Snackbar/Toast to notice user there is new message comes
@@ -66,7 +66,7 @@
                  lastY=ev.offsetY;
                  gd.strokeStyle=color;
                  gd.stroke();
-                 socket.emit('draw1',{'initX':initX, 'initY':initY,'lastX':lastX,'lastY':lastY,'color':color, 'receiver': '{{send_to}}'});
+                 socket.emit('draw1',{'initX':initX, 'initY':initY,'lastX':lastX,'lastY':lastY,'color':color});
                  initX=lastX;
                  initY=lastY;
             }
@@ -75,10 +75,6 @@
                 oV.onmouseup=null;
             }
        }
-
-       document.getElementById("gameMessage").innerHTML = "<div class='sender_message'>" + sender + " joined the game room." + "</div>";
-       var message = sender + " joined the game room.";
-       socket.emit('gameChat',{'sender':sender, 'receiver':receiver, 'message':message});
     } //window.onload
 
     socket.on('draw2',function(data) {
@@ -92,46 +88,37 @@
        gd2.stroke();
     });
 
-    socket.on('clear2',function(data) {
-       let oV4=document.getElementById('drawBoard');
-       let gd4=oV4.getContext('2d');
-       oV4.height = data.height;
-    });
-
     $('#invite').on('click',function() {
-        socket.emit('invite',{'sender':sender, 'receiver':receiver});
+        socket.emit('invite',{'sender':sender});
     });
 
     socket.on('notice', function(players) {
         var y = document.getElementById("invitation");
-        y.innerHTML = "A game invitation come from "+ players.sender;
-        y.className = "show";
-        setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
+        if(players.sender != sender){
+            y.innerHTML = "A game invitation come from "+ players.sender;
+            y.className = "show";
+            setTimeout(function(){ y.className = y.className.replace("show", ""); }, 10000);
+        }
     });
 
     $(document).ready(function() {
         $('#clearDraw').on('click',function() {
-          let oV3 = document.getElementById('drawBoard');
-          let gd3 = oV3.getContext('2d');
-          oV3.height = oV3.height;
-          socket.emit('clear1',{'height':oV3.height, 'receiver': '{{send_to}}'});
+            let oV3 = document.getElementById('drawBoard');
+            let gd3 = oV3.getContext('2d');
+            oV3.height = oV3.height;
+            socket.emit('clear1',{'height':oV3.height, 'receiver': '{{send_to}}'});
+    });
+
+    socket.on('clear2',function(data) {
+        let oV4=document.getElementById('drawBoard');
+        let gd4=oV4.getContext('2d');
+        oV4.height = data.height;
     });
 
     $('#gameTextSend').on('click',function() {
         var message = $('#gameText').val();
         if (message){
-            var target = document.getElementById("gameMessage");
-            var history = target.innerHTML;
-            message1 = message.replace(/&/g, '&amp;');
-            message1 = message1.replace(/</g, '&lt;');
-            message1 = message1.replace(/>/g, '&gt;');
-            message1 = message1.replace(/"/g, '&quot;');
-            message1 = message1.replace(/'/g, '&apos;');
-            history += "<div class='sender_message'>" + message1 + "</div>";
-            target.innerHTML = history;
-            target.scrollTop = target.scrollHeight;
-
-            socket.emit('gameChat',{'sender':sender, 'receiver':receiver, 'message':message});
+            socket.emit('gameChat',{'sender':sender, 'message':message});
             $('#gameText').val('');
         }
     });
@@ -139,20 +126,54 @@
     socket.on('gameChat2', function(msg) {
         var target = document.getElementById("gameMessage");
         var history = target.innerHTML;
-        history += "<div class='receiver_message'>" + msg.message + "</div>";
+        if(msg.sender == sender){
+            history += "<div class='sender_message' title='Sent: " + sender + "'>" + msg.message + "</div>";
+        }
+        else{
+            history += "<div class='receiver_message' title='Sent: " + msg.sender + "'>" + msg.message + "</div>";
+        }
         target.innerHTML = history;
         target.scrollTop = target.scrollHeight;
     });
+
+    socket.on('new_gamer', function(user) {
+        var users = document.getElementById('gamers');
+        var all_users = users.innerHTML;
+        if (!all_users.includes(user)){
+            var new_user = '<a href="user_profile/' + user + '" class="profile">' + user + '</a><br>';
+            users.innerHTML += new_user;
+        }
+    });
+
+    socket.on('message', function(players) {
+        var users = document.getElementById('gamers');
+        users.innerHTML = "";
+
+        for(i = 0; i < players.length; i++){
+            var gamer = '<a href="user_profile/' + players[i] + '" class="profile">' + players[i] + '</a><br>';
+            users.innerHTML += gamer;
+        }
+    });
+
 });
 
  </script>
         <div class="gameContainer">
-            <div class="game"><canvas id="drawBoard" width="600" height="500"></canvas></div>
+            <div class="game"><canvas id="drawBoard" width="500" height="500"></canvas></div>
             <div class="gameChat">
                 <div id="gameMessage"></div>
                 <div class="gameChatMenu">
                     <input type="text" id="gameText">
                     <button id="gameTextSend">send</button>
+                </div>
+            </div>
+            <div class="game_users">
+                <h3>Game Room Players</h3>
+                <hr/>
+                <div id="gamers">
+                {% for user in players %}
+                    <a href="user_profile/{{user}}" class="profile">{{user}}</a><br>
+                {% endfor %}
                 </div>
             </div>
         </div>

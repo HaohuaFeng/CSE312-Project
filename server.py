@@ -12,7 +12,7 @@ import json
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
 #     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', password='', charset='utf8mb4',
+db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
                     cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
@@ -40,7 +40,7 @@ socketio = SocketIO(app)
 
 online_users = []
 users_icon = dict()
-
+game_users = []
 
 @app.before_request
 def advance_session_timeout():
@@ -59,10 +59,6 @@ def hello_world():
     cur.execute(sql)
     blogs = cur.fetchall()
 
-    # for x in online_users:
-    #     num = online_users.count(x)
-    #     if num > 1:
-    #         online_users.remove(x)
     online_users.sort()
     users_login = list()
     for user in online_users:
@@ -70,11 +66,6 @@ def hello_world():
         temp['username'] = user
         temp['icon'] = users_icon[user]
         users_login.append(temp)
-    # print("online_users")
-    # print(online_users)
-    # print("users_login")
-    # print(users_login)
-    # sys.stdout.flush()
 
     if users_login:
         return render_template('index.html', user=username, blogs=blogs, users=users_login)
@@ -95,18 +86,25 @@ def connect_handler():
             print(str(session['user']) + " connected")
             sys.stdout.flush()
             emit('new_user', user, broadcast=True)
+            if room in game_users:
+                print("first")
+                emit('new_gamer', room, broadcast=True)
 
 
 @socketio.on('disconnect')
 def disconnect_handler():
-    if ('user' in session) and (session['user'] in online_users):
+    if 'user' in session:
         room = session['user']
         leave_room(room)
+        if room in game_users:
+            game_users.remove(room)
+            for user in game_users:
+                send(game_users, room=user)
+
         print(str(session['user']) + " disconnected")
         sys.stdout.flush()
-        online_users.remove(session['user'])
+        online_users.remove(room)
         online_users.sort()
-        print(online_users)
         users_login = list()
         for user in online_users:
             temp = dict()
@@ -118,20 +116,6 @@ def disconnect_handler():
             send(users_json, json=True, broadcast=True)
         else:
             send(json.dumps(""), json=True, broadcast=True)
-
-
-# @app.route("/get-users")
-# def show_users():
-#     users_login = list()
-#     for user in online_users:
-#         temp = dict()
-#         temp['username'] = user
-#         temp['icon'] = users_icon[user]
-#         users_login.append(temp)
-#
-#     if users_login:
-#         return jsonify(users_login)
-#     return jsonify("")
 
 
 @socketio.on('send-message')
@@ -455,19 +439,40 @@ def check_user_exist():
             return jsonify(result)
 
 
-@app.route('/game/<send_to_user>')
-def gaming(send_to_user):
+# @app.route('/game/<send_to_user>')
+# def gaming(send_to_user):
+#     if 'user' in session:
+#         if session['user'] == send_to_user:
+#             return redirect(url_for("profile"))
+#         sender = session['user']
+#         game_users.append(sender)
+#         return render_template("game.html", sender=sender, players=game_users, send_to=send_to_user)
+#     else:
+#         redirecting = '<h3>Redirecting ... </h3>'
+#         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+#         return "<h1>Please login first.</h1>" + redirecting + rd_fail
+
+
+@app.route('/game')
+@app.route('/game.html')
+def gaming2():
     if 'user' in session:
-        if session['user'] == send_to_user:
-            return redirect(url_for("profile"))
-
-        sender = session['user']
-
-        return render_template("game.html", sender=sender, send_to=send_to_user)
+        game_users.append(session['user'])
+        print('second')
+        return render_template("game.html", sender=session['user'], players=game_users)
     else:
         redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
         return "<h1>Please login first.</h1>" + redirecting + rd_fail
+
+
+@socketio.on('invite')
+def invite(players):
+    if 'user' in session:
+        sender = players.get('sender')
+        for user in online_users:
+            if user not in game_users:
+                emit('notice', {'sender': sender}, room=user)
 
 
 @socketio.on('draw1')
@@ -480,32 +485,24 @@ def handleDraw(data):
     receiver = data.get('receiver')
     # print("x: " + str(data.get('axis_X')))
     # print("y: " + str(data.get('axis_Y')))
-    emit('draw2', {'initX': initX, 'initY': initY, 'lastX': lastX, 'lastY': lastY,
-                   'color': color, 'receiver': receiver}, room=receiver)
-
-
-@socketio.on('invite')
-def invite(players):
-    if 'user' in session:
-        sender = players.get('sender')
-        receiver = players.get('receiver')
-        emit('notice', {'sender': sender, 'receiver': receiver}, room=receiver)
+    for user in game_users:
+        emit('draw2', {'initX': initX, 'initY': initY, 'lastX': lastX, 'lastY': lastY, 'color': color}, room=user)
 
 
 @socketio.on('clear1')
 def handleClear(data):
     height = data.get('height')
-    receiver = data.get('receiver')
-    emit('clear2', {'height': height}, room=receiver)
+    for user in game_users:
+        emit('clear2', {'height': height}, room=user)
 
 
 @socketio.on('gameChat')
 def gameChat(msg):
     if 'user' in session:
         sender = msg.get('sender')
-        receiver = msg.get('receiver')
         message = msg.get('message')
-        emit('gameChat2', {'sender': sender, 'receiver': receiver, 'message': escape(message)}, room=receiver)
+        for user in game_users:
+            emit('gameChat2', {'sender': sender, 'message': escape(message)}, room=user)
 
 
 if __name__ == "__main__":

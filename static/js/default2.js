@@ -27,9 +27,10 @@ $(document).ready(function() {
             new_user += '&nbsp;&nbsp;&nbsp;';
             new_user += '<a href="direct_chat/' + users[i].username + '"><img src="static/images/msg1.png" ' +
                         'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
-            new_user += '&nbsp;&nbsp;&nbsp;';
-            new_user += '<a href="game/' + users[i].username + '"><img src="static/images/game1.png" ' +
-                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a><br/>';
+//            new_user += '&nbsp;&nbsp;&nbsp;';
+//            new_user += '<a href="game/' + users[i].username + '"><img src="static/images/game1.png" ' +
+//                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
+            new_user += '<br/>';
 
             list.innerHTML += new_user;
         }
@@ -44,9 +45,10 @@ $(document).ready(function() {
             new_user += '&nbsp;&nbsp;&nbsp;';
             new_user += '<a href="direct_chat/' + user.username + '"><img src="static/images/msg1.png" ' +
                         'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
-            new_user += '&nbsp;&nbsp;&nbsp;';
-            new_user += '<a href="game/' + user.username + '"><img src="static/images/game1.png" ' +
-                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a><br/>';
+//            new_user += '&nbsp;&nbsp;&nbsp;';
+//            new_user += '<a href="game/' + user.username + '"><img src="static/images/game1.png" ' +
+//                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
+            new_user += '<br/>';
 
             users.innerHTML += new_user;
         }

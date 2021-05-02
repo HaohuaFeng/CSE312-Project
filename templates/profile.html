@@ -10,22 +10,22 @@
     <script src="../static/js/default.js" charset="utf-8"></script>
 </head>
 <body>
-    <h1>Project Name</h1>
+    <h1>FaceNote</h1>
     <div id="newCome"></div>
     <div id="invitation"></div>
     {% if user %}
     <div class="header">
         <a href="index.html" >Home</a>
+        <a href="game.html" >Game</a>
         <a href="about.html" >About</a>
         <a href="register.html">Register</a>
         <a href="profile.html" class="profile" id="select_color" >{{user['username']}}</a>
         <a href="/logout">Logout</a>
     </div>
     <div class="main">
-        <div class="description">Profile Page</div>
+        <div class="description">User's Profile Page</div>
         <hr>
-        <h2>Welcome {{user['username']}}</h2>
-        <h3><a href="reset.html"> Change Password</a></h3>
+        <h2>Welcome {{user['username']}}.<a href="reset.html">  Change Password</a></h2>
         <form method="post" enctype="multipart/form-data" class="update_profile">
            <div class="row">
                <div class="column side">
