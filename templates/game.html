@@ -33,6 +33,10 @@
 
  <script>
     var socket = io();
+
+    var sender = "{{sender}}";
+    var receiver = "{{send_to}}";
+
     socket.on('privateMessage',function(msg) {
 //      using Snackbar/Toast to notice user there is new message comes
 //      https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar
@@ -67,10 +71,14 @@
                  initY=lastY;
             }
             oV.onmouseup=function () {
-              oV.onmousemove=null;
-              oV.onmouseup=null;
+                oV.onmousemove=null;
+                oV.onmouseup=null;
             }
        }
+
+       document.getElementById("gameMessage").innerHTML = "<div class='sender_message'>" + sender + " joined the game room." + "</div>";
+       var message = sender + " joined the game room.";
+       socket.emit('gameChat',{'sender':sender, 'receiver':receiver, 'message':message});
     } //window.onload
 
     socket.on('draw2',function(data) {
@@ -91,8 +99,6 @@
     });
 
     $('#invite').on('click',function() {
-        var sender = "{{sender}}";
-        var receiver = "{{send_to}}";
         socket.emit('invite',{'sender':sender, 'receiver':receiver});
     });
 
@@ -112,8 +118,6 @@
     });
 
     $('#gameTextSend').on('click',function() {
-        var sender = "{{sender}}";
-        var receiver = "{{send_to}}";
         var message = $('#gameText').val();
         if (message){
             var target = document.getElementById("gameMessage");

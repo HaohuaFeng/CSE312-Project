@@ -3,16 +3,17 @@ import pymysql
 import os
 import bcrypt
 from datetime import datetime
-from flask_socketio import SocketIO, emit, join_room, leave_room
+from flask_socketio import SocketIO, emit, join_room, leave_room, send
 import base64
 from PIL import Image
 import sys
+import json
 
-db = pymysql.connect(host='db', user='root', password=os.getenv(
-     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='db', user='root', password=os.getenv(
+#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-#db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-#                     cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
+                    cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
@@ -62,7 +63,7 @@ def hello_world():
     #     num = online_users.count(x)
     #     if num > 1:
     #         online_users.remove(x)
-
+    online_users.sort()
     users_login = list()
     for user in online_users:
         temp = dict()
@@ -104,20 +105,33 @@ def disconnect_handler():
         print(str(session['user']) + " disconnected")
         sys.stdout.flush()
         online_users.remove(session['user'])
+        online_users.sort()
+        print(online_users)
+        users_login = list()
+        for user in online_users:
+            temp = dict()
+            temp['username'] = user
+            temp['icon'] = users_icon[user]
+            users_login.append(temp)
+        if users_login:
+            users_json = json.dumps(users_login)
+            send(users_json, json=True, broadcast=True)
+        else:
+            send(json.dumps(""), json=True, broadcast=True)
 
 
-@app.route("/get-users")
-def show_users():
-    users_login = list()
-    for user in online_users:
-        temp = dict()
-        temp['username'] = user
-        temp['icon'] = users_icon[user]
-        users_login.append(temp)
-
-    if users_login:
-        return jsonify(users_login)
-    return jsonify("")
+# @app.route("/get-users")
+# def show_users():
+#     users_login = list()
+#     for user in online_users:
+#         temp = dict()
+#         temp['username'] = user
+#         temp['icon'] = users_icon[user]
+#         users_login.append(temp)
+#
+#     if users_login:
+#         return jsonify(users_login)
+#     return jsonify("")
 
 
 @socketio.on('send-message')
@@ -390,7 +404,7 @@ def handleMessage(msg):
         now = datetime.now()
         date = now.strftime("%m/%d/%Y %H:%M:%S")
         sql = "insert into message values (%s,%s,%s,%s);"
-        cur.execute(sql, (sender, receiver, message, date))
+        cur.execute(sql, (sender, receiver, message,date))
         db.commit()
 
         emit('privateMessage', {'sender': sender, 'receiver': receiver,
