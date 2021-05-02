@@ -9,11 +9,11 @@ from PIL import Image
 import sys
 import json
 
-# db = pymysql.connect(host='db', user='root', password=os.getenv(
-#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+#db = pymysql.connect(host='db', user='root', password=os.getenv(
+     #'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-                    cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='localhost', user='root', password='Hbcheng?51', charset='utf8mb4',
+                   db='zhong',  cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
 cur.execute("create database IF NOT EXISTS zhong")
