@@ -10,10 +10,10 @@ a {
     text-align: center;
     line-height: 50px;
     font-size: 20px;
-    color: black;
-    text-decoration: none;
-    border: 1px solid black;
-    margin: 20px 2px;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 2px 5px 10px rgb(192, 225, 255);
+    padding: 2.5px 2.5px;
 }
 
 button:hover {
@@ -134,7 +134,7 @@ input[type=reset]:hover{
 }
 
 .send_blog, .view_blog, .online_user{
-    border: 2px solid red;
+    border: 1.5px solid rgb(243, 166, 121);
     border-radius: 20px;
     box-shadow: 2px 5px 10px pink;
     padding: 20px 20px;
@@ -153,9 +153,11 @@ input[type=reset]:hover{
 }
 
 .row {
-    border: 1px red solid;
     margin: 10px;
     width: 900px;
+    border-radius: 20px;
+    border: 1.5px solid rgb(243, 166, 121);
+    box-shadow: 2px 5px 10px pink;
 }
 .column {
 
@@ -179,9 +181,11 @@ input[type=reset]:hover{
 }
 .bot_profile {
     padding: 10px 30px;
-    border: 1px red solid;
     margin: 10px;
     width: 840px;
+    border-radius: 20px;
+    border: 1.5px solid rgb(243, 166, 121);
+    box-shadow: 2px 5px 10px pink;
 }
 
 #newCome, #invitation {
