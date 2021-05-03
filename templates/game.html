@@ -27,10 +27,9 @@
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">Game Room.
-        <button id="invite">Invite All Users</button></div>
+        <div class="description">Game Room &nbsp;&nbsp;&nbsp;<button id="invite">Invite All Users</button></div>
         <hr>
-        <input type="color" id="color1" />Color bar <button id="clearDraw">Clear draw</button><br/>
+        <input type="color" id="color1" /><span id="color_bar">Color Bar</span> <button id="clearDraw">Clear draw</button><br/>
 
  <script>
     var socket = io();
@@ -177,9 +176,9 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="footer">
-        <p>Copyright &copy; 2021 FaceNote</p>
+        <div class="footer">
+            <p>Copyright &copy; 2021 FaceNote</p>
+        </div>
     </div>
 </body>
 </html>

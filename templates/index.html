@@ -28,18 +28,18 @@
         {% endif %}
     </div>
     <div class="main">
-        <div class="description">Home page</div>
+        <div class="description">Home Page</div>
         <hr>
         <div class="left_col">
             <div class="online_user">
                 <h2>Online Users:</h2>
                 <hr>
-                <div id="current_users">
+                <div id="current_users" class="cur_users">
                 {% for user in users %}
                     <a href="user_profile/{{user['username']}}" class="profile">
                         <img src="static/images/{{user['icon']}}" width=50/>{{user['username']}}</a>
                     &nbsp;&nbsp;&nbsp;
-                    <a href="direct_chat/{{user['username']}}"><img src="static/images/msg1.png"
+                    <a href="direct_chat/{{user['username']}}" class="DM_icon"><img src="static/images/msg1.png"
                              onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>
 <!--                    &nbsp;&nbsp;&nbsp;-->
 <!--                    <a href="game/{{user['username']}}"><img src="static/images/game1.png"-->
@@ -86,10 +86,9 @@
                 </div>
             </div>
         </div>
-
-    </div>
-    <div class="footer">
-        <p>Copyright &copy; 2021 FaceNote</p>
+        <div class="footer">
+            <p>Copyright &copy; 2021 FaceNote</p>
+        </div>
     </div>
 </body>
 </html>

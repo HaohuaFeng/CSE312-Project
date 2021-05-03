@@ -32,14 +32,15 @@
                    <label for="email">Email :</label>
                    <input id="email" type="text" name="email" value ="{{user['email']}}" required>
                    <br/>
-                   <label>Gender :</label><br>
-                   <input type="radio" name="gender" value="Male" id="male" {{check_male}} required>
-                   <label for="male">Male</label><br>
-                   <input type="radio" name="gender" value="Female" id="female" {{check_female}} required>
-                   <label for="female">Female</label><br>
-                   <input type="radio" name="gender" value="N/A" id="na" {{check_NA}} required>
-                   <label for="na">N/A</label><br>
-
+                   <div class="input_radio">
+                       <label>Gender :</label><br>
+                       <input type="radio" name="gender" value="Male" id="male" {{check_male}} required>
+                       <label for="male">Male</label><br>
+                       <input type="radio" name="gender" value="Female" id="female" {{check_female}} required>
+                       <label for="female">Female</label><br>
+                       <input type="radio" name="gender" value="N/A" id="na" {{check_NA}} required>
+                       <label for="na">N/A</label><br>
+                   </div>
                    <br/>
                    <label for="birth">Date of Birth:</label>
                    <input id="birth" type="date" name="birth" value="{{user['birth']}}" required>
@@ -48,26 +49,26 @@
                    <input id="personal_page" type="text" name="personal_page" value="{{user['personal_page']}}" required>
                </div>
                <div class="column middle">
-                   <label for="icon">User Picture</label><br>
+                   <label for="icon"><div id="profile_pic">User Picture</div></label><br>
                    <label for="icon">
                        <img src="static/images/{{user['icon']}}" id="pic" width=250 /></label><br>
                    <input id="icon" type="file" name="icon" accept="image/*" required>
                </div>
            </div>
            <div class="bot_profile">
-               <label for="introduction">Introduction </label><br/>
-               <textarea id="introduction"  name="introduction" rows="10" required>{{user['introduction']}}</textarea>
-               <input type="submit" value="Submit">
-               <input type="reset">
-           </div>
+               <label for="introduction"><div id="profile_int">Introduction</div></label><br/>
+               <div id="profile_des">
+                    <textarea id="introduction"  name="introduction" rows="10" required>{{user['introduction']}}</textarea>
+               </div>
+               <input type="submit" value="Submit" id="pro_sub">
+               <input type="reset" id="pro_reset">
+               </div>
         </form>
+        <div class="footer">
+            <p>Copyright &copy; 2021 FaceNote</p>
+        </div>
     </div>
     
 {% endif %}
-    <div class="footer">
-        <p>Copyright &copy; 2021 FaceNote</p>
-    </div>
-
-
 </body>
 </html>

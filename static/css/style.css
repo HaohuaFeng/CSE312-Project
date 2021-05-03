@@ -1,9 +1,18 @@
+body {
+    text-align: center;
+}
+h1 {
+    color: #03A9F4;
+    font-size: 55px;
+    text-align: center;
+    text-shadow:2px 2px 10px #5bdada;
+}
 a {
     text-decoration: none;
     color: blue;
 }
-
 .header a{
+    font-weight: bold;
     border: 1px solid;
     display: inline-block;
     min-width: 150px;
@@ -18,54 +27,116 @@ a {
     box-shadow: 2px 5px 10px #03A9F4;
     padding: 2.5px 2.5px;
 }
-
-button:hover {
+.header a:hover{
+    color: white;
     background-color: orange;
+    box-shadow: 2px 2px 10px rgb(230 121 57);
 }
-
 #select_color {
     color: white;
     background-color: orange;
 }
-
-.profile:link {
-    font-size: 25px;
-    color: blue;
-    background-color: Azure;
-    text-decoration: underline;
+.description {
+    text-align: left;
+    line-height: 50px;
+    font-size: 30px;
+    padding: 10px 50px;
 }
-
-.profile:hover {
-    color: while;
-    background-color: orange;
+hr {
+    border-top: 1px dotted #03A9F4;
 }
-
-.header a:hover{
-    color: white;
-    background-color: orange;
-}
-
 .main {
+    position: relative;
+    margin: auto;
     width: 1100px;
     font-size: 20px;
     min-height: 640px;
 }
 .footer {
     position: relative;
-    margin-left: 350px;
-    font-size: 25px;
     bottom: -80px;
+    margin-left: 250px;
+    font-size: 25px;
     z-index: -1;
 }
-.description {
-    line-height: 50px;
+button {
+    height: 45px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    font-size: 20px;
+}
+button:hover {
+    background-color: orange;
+}
+.profile:link {
+    font-size: 25px;
+    background-color: Azure;
+    text-decoration: underline;
+}
+.profile > img {
+    border: 1px solid orange;
+    margin-right: 10px;
+}
+.cur_users{
+    position: relative;
+}
+.cur_users > a{
+    background-color: white;
+}
+
+.DM_icon {
+    position: absolute;
+    right: -5px;
+    padding-top: 10px;
+/*     top: 10px; */
+}
+.left_col {
+    width: 320px;;
+    float: left;
+    padding: 10px 10px;
+}
+.right_col {
+    width: 730px;
+    float: right;
+    padding: 10px 10px;
+}
+.send_blog, .view_blog, .online_user{
+    text-align: left;
+    border: 1px solid #03A9F4;
+    border-radius: 20px;
+    box-shadow: 2px 5px 10px #03A9F4;
+    padding: 20px 30px;
+}
+.send_blog {
+    padding-left: 100px;
+}
+.send_blog h2, .view_blog h2, .online_user h2{
+    text-align: center;
+}
+.history {
+    border: 1px solid #03A9F4;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px #03a9f4;
+    padding: 5px 30px;
+    margin: 20px 10px;
+}
+#color1 {
+    width: 220px;
+    height:  50px;
+}
+#color_bar {
+    margin: 0 150px 5px 30px;
     font-size: 30px;
-    padding: 15px 10px;
 }
 
 .login form, .register form, .sub_blog, .update_profile{
+    text-align:right;
+    margin-right: 300px;
     padding: 20px 20px;
     font-size: 25px;
+}
+#login_footer{
+    bottom: -10px;
 }
 input{
     width: 300px;
@@ -73,7 +144,7 @@ input{
     margin: 8px 0;
     box-sizing: border-box;
 }
-input[type=submit], #clearDraw {
+input[type=submit] {
     width: 150px;
     margin: 10px 150px;
     box-sizing: border-box;
@@ -92,9 +163,14 @@ input[type=radio]{
     padding: 0;
     font-size: 20px;
 }
+.input_radio {
+    padding-left: 105px;
+    text-align: left;
+}
 textarea {
     font-size: 25px;
-    color: green;
+    border: 1px solid #03A9F4;;
+    color: #03A9F4;
     width: 90%;
 }
 
@@ -109,10 +185,9 @@ input[type=reset]:hover{
 
 .casualCase {
     line-height: 30px;
-    font-size: 20px;
+    font-size: 25px;
     padding: 0px 10px;
 }
-
 .casualCase a{
     text-decoration: underline;
     color: blue;
@@ -123,76 +198,79 @@ input[type=reset]:hover{
     background-color: orange;
     text-decoration: none;
 }
-
-.left_col {
-    width: 320px;;
-    float: left;
-    padding: 10px 10px;
-}
-
-.right_col {
-    width: 730px;
-    float: right;
-    padding: 10px 10px;
-}
-
-.send_blog, .view_blog, .online_user{
-    border: 2px solid red;
-    border: 1.5px solid rgb(243, 166, 121);
-
-    border-radius: 20px;
-    box-shadow: 2px 5px 10px pink;
-    padding: 20px 20px;
-}
-
-.send_blog h2, .view_blog h2, .online_user h2{
-    text-align: center;
-}
-
-.history {
-    border: 1px solid blue;
-    border-radius: 15px;
-    box-shadow: 2px 5px 10px green;
-    padding: 10px 20px;
-    margin: 20px 5px;
-}
-
 .row {
     margin: 10px;
     width: 900px;
-    border-radius: 20px;
-    border: 1.5px solid rgb(243, 166, 121);
-    box-shadow: 2px 5px 10px pink;
+    border: 1px solid #03A9F4;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px #03a9f4;
 }
 .column {
-
     float: left;
-    padding: 10px 30px;
 }
 .column.side {
+    padding-top: 20px;
     width: 500px;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 .column.middle {
+    float: right;
     width: 250px;
+    padding-right: 50px;
 }
 .row:after {
     content: "";
     display: table;
     clear: both;
 }
+#profile_pic, #profile_int{
+    text-align: left;
+    font-size: 25px;
+    font-weight: bold;
+    padding-top: 10px;
+}
 #pic {
-    border: 1px blue solid;
+    border: 1px solid #03A9F4;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px #03a9f4;
 }
 .bot_profile {
-    padding: 10px 30px;
+    padding: 10px;
     margin: 10px;
-    width: 840px;
-    border-radius: 20px;
-    border: 1.5px solid rgb(243, 166, 121);
-    box-shadow: 2px 5px 10px pink;
+    width: 880px;
+    border: 1px solid #03A9F4;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px #03a9f4;
 }
-
+#profile_int {
+    padding-left: 30px;
+}
+#profile_des {
+    padding-right: 50px;
+}
+#pro_sub {
+    margin-right: 280px;
+}
+#pro_reset {
+    margin-right: 120px;
+}
+.check {
+    width: 850px;
+    font-size: 25px;
+    text-align: left;
+    padding-left: 50px;
+}
+.check_icon {
+    padding-top: 30px;
+}
+.check_des {
+    padding-left: 50px;
+    font-size: 25px;
+    text-align: left;
+}
+.check_des > p > span {
+    color: red;
+}
 #newCome, #invitation {
     visibility: hidden;
     text-align: center;
@@ -214,12 +292,15 @@ input[type=reset]:hover{
 
 .direct_chat_container {
     position: absolute;
+    margin-left: 130px;
 }
 .direct_chat_box {
     position: relative;
     width: 800px;
-    height: 550px;
-    border: 1px black solid;
+    height: 500px;
+    border: 1px solid #03A9F4;
+    border-radius: 15px;
+    box-shadow: 2px 5px 10px #03a9f4;
     font-size: 25px;
     padding: 10px;
     border-radius: 10px;
@@ -257,30 +338,19 @@ input[type=reset]:hover{
 .send_out {
      text-align: center;
 }
-
-#sendbutton, #send_blog, #clearDraw, #invite, #gameTextSend {
-
-    height: 50px;
-    box-sizing: border-box;
-    border-radius: 10px;
-    font-size: 20px;
+#chat_footer {
+    bottom: -20px;
 }
-
+.mini_icon {
+    width: 40px;
+    height: 40px;
+}
 #drawBoard {
     background:white;
-    border: 1px solid;
+    border: 1px solid #03a9f4;
+    border-radius: 20px;
+    box-shadow: 2px 5px 10px #03a9f4;
 }
-
-#color1 {
-    width: 250px;
-    height:  60px;
-}
-
-.mini_icon {
-    width: 35px;
-    height: 35px;
-}
-
 .game {
     float: left;
 }
@@ -292,40 +362,31 @@ input[type=reset]:hover{
     width: 350px;
     float: left;
     font-size:18px;
-
-    
+    border: 1px solid #03a9f4;
+    border-radius: 20px;
+    box-shadow: 2px 5px 10px #03a9f4;
 }
 #gameMessage{
     height: 450px;
-    border: 1px solid black;
     overflow-y: scroll;
-}
-#gameMessage p {
-    padding: 10px 10px;
+    padding: 5px 5px;
 }
 .gameChatMenu {
-    margin-left: 30px;
+    margin-left: 20px;
 }
 .game_users {
     text-align: center;
     width: 220px;
     height: 430px;
     float:left;
-    border: 2px solid red;
-    border: 1.5px solid rgb(243, 166, 121);
-
+    border: 1.5px solid #03a9f4;
     border-radius: 20px;
-    box-shadow: 2px 5px 10px pink;
-    padding: 10px 10px;
-}
+    box-shadow: 2px 5px 10px #03a9f4;
+    padding: 15px 5px;
 
-h1 {
-    color: #03A9F4;
-    font-size: 60px;
-    text-align: center;
 }
-
 .about {
+    text-align: left;
+    padding: 0 150px;
     width: 800px;
-
 }
