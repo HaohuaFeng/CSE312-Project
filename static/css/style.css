@@ -80,7 +80,7 @@ button:hover {
 .cur_users{
     position: relative;
 }
-.cur_users > a{
+.cur_users > .profile{
     background-color: white;
 }
 
@@ -120,16 +120,18 @@ button:hover {
     padding: 5px 30px;
     margin: 20px 10px;
 }
+
 #color1 {
-    width: 220px;
+    width: 150px;
     height:  50px;
+    margin-left: -600px;
 }
 #color_bar {
-    margin: 0 150px 5px 30px;
+    margin: 0 80px 5px 30px;
     font-size: 30px;
 }
 
-.login form, .register form, .sub_blog, .update_profile{
+.login form, .register form, .reset form, .sub_blog, .update_profile{
     text-align:right;
     margin-right: 300px;
     padding: 20px 20px;
@@ -313,8 +315,8 @@ input[type=reset]:hover{
     width: fit-content;
     max-width: 60%;
     word-wrap: break-word;
-    text-align: right;
-    padding: 5px 10px;
+    text-align: left;
+    padding: 10px 5px 10px 5px;
     margin: 5px;
     border: 1px black solid;
     border-radius: 20px;
@@ -327,8 +329,8 @@ input[type=reset]:hover{
     width: fit-content;
     max-width: 60%;
     word-wrap: break-word;
-    text-align: right;
-    padding: 5px 10px;
+    text-align: left;
+    padding: 10px 5px 10px 5px;
     margin: 5px;
     border: 1px black solid;
     border-radius: 20px;
@@ -389,4 +391,20 @@ input[type=reset]:hover{
     text-align: left;
     padding: 0 150px;
     width: 800px;
+}
+.reg_container, .reset_container {
+    position: relative;
+    left: 50px;
+    height: 400px;
+}
+.register, .reset {
+    position: absolute;
+    left: 30px;
+}
+.instructions {
+    position: absolute;
+    right: 30px;
+    width: 450px;
+    text-align: left;
+    font-size: 25px;
 }

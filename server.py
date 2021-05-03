@@ -87,7 +87,6 @@ def connect_handler():
             sys.stdout.flush()
             emit('new_user', user, broadcast=True)
             if room in game_users:
-                print("first")
                 emit('new_gamer', room, broadcast=True)
 
 
@@ -219,7 +218,10 @@ def reset():
 
     if 'user' in session:
         return render_template('reset.html', user=session['user'])
-    return render_template('reset.html')
+    else:
+        redirecting = '<h3>Redirecting ... </h3>'
+        rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
+        return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @app.route('/forgot.html', methods=['POST', 'GET'])
@@ -435,22 +437,8 @@ def check_user_exist():
                 result["display"] = "<font color='red'> ❌ username \"" + username + "\" has been taken</font>"
             else:
                 result["exists"] = False
-                result["display"] = "<font color='green'> ✔ </font>"
+                result["display"] = "<font color='green'> ✔ You can use this username. </font>"
             return jsonify(result)
-
-
-# @app.route('/game/<send_to_user>')
-# def gaming(send_to_user):
-#     if 'user' in session:
-#         if session['user'] == send_to_user:
-#             return redirect(url_for("profile"))
-#         sender = session['user']
-#         game_users.append(sender)
-#         return render_template("game.html", sender=sender, players=game_users, send_to=send_to_user)
-#     else:
-#         redirecting = '<h3>Redirecting ... </h3>'
-#         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'
-#         return "<h1>Please login first.</h1>" + redirecting + rd_fail
 
 
 @app.route('/game')
@@ -458,7 +446,6 @@ def check_user_exist():
 def gaming2():
     if 'user' in session:
         game_users.append(session['user'])
-        print('second')
         return render_template("game.html", sender=session['user'], players=game_users)
     else:
         redirecting = '<h3>Redirecting ... </h3>'

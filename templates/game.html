@@ -16,7 +16,7 @@
     <div id="invitation"></div>
     <div class="header">
         <a href="/index.html" >Home</a>
-        <a href="game.html" id="select_color">Game</a>
+        <a href="/game.html" id="select_color">Game</a>
         <a href="/about.html" >About</a>
         <a href="/register.html">Register</a>
         {% if sender %}
@@ -29,8 +29,9 @@
     <div class="main">
         <div class="description">Game Room &nbsp;&nbsp;&nbsp;<button id="invite">Invite All Users</button></div>
         <hr>
-        <input type="color" id="color1" /><span id="color_bar">Color Bar</span> <button id="clearDraw">Clear draw</button><br/>
-
+        <div id="canvar_bar"><input type="color" id="color1" /><span id="color_bar">Color Bar</span>
+            <button id="clearDraw">Clear draw</button><br/>
+        </div>
  <script>
     var socket = io();
 
@@ -74,6 +75,7 @@
                 oV.onmouseup=null;
             }
        }
+       socket.emit('gameChat',{'sender':sender, 'message': sender + " joined the game room."});
     } //window.onload
 
     socket.on('draw2',function(data) {
