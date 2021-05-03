@@ -15,7 +15,7 @@ a {
     margin: 20px 2px;
     border-radius: 20px;
     border: none;
-    box-shadow: 2px 5px 10px rgb(192, 225, 255);
+    box-shadow: 2px 5px 10px #03A9F4;
     padding: 2.5px 2.5px;
 }
 
@@ -319,3 +319,13 @@ input[type=reset]:hover{
     padding: 10px 10px;
 }
 
+h1 {
+    color: #03A9F4;
+    font-size: 60px;
+    text-align: center;
+}
+
+.about {
+    width: 800px;
+
+}
