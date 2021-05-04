@@ -15,7 +15,7 @@ come.</p>
 <p>The most attractive function of FaceNote is its “Game”. In order to join the Game Room, please log in
 first. There are three “boxes” in Game Room page, the biggest box is a canvas, you can draw on it and
 see what other players draw on it. There are many types of game players can play, such as “You Draw, I
-guess”, or players can draw together. If you are not good at drawing, you can talk to other players on
+Guess”, or players can draw together. If you are not good at drawing, you can talk to other players on
 the second box, which is a chat box. The box in the right show a list of players who is current joined
 the Game Room. You can invite all online users to join the Game Room by clicking "Invite All Users"
 button.</p>
