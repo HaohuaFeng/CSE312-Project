@@ -8,15 +8,15 @@ import base64
 from PIL import Image
 import json
 
-# db = pymysql.connect(host='db', user='root', password=os.getenv(
-#     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+db = pymysql.connect(host='db', user='root', password=os.getenv(
+     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
-db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
-                    cursorclass=pymysql.cursors.DictCursor)
+# db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
+#                    cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
-cur.execute("create database IF NOT EXISTS zhong")
-cur.execute("use zhong")
+# cur.execute("create database IF NOT EXISTS zhong")
+# cur.execute("use zhong")
 cur.execute(
     "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(500),icon varchar("
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
