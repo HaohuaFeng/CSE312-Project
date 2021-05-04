@@ -120,17 +120,6 @@ button:hover {
     padding: 5px 30px;
     margin: 20px 10px;
 }
-
-#color1 {
-    width: 150px;
-    height:  50px;
-    margin-left: -600px;
-}
-#color_bar {
-    margin: 0 80px 5px 30px;
-    font-size: 30px;
-}
-
 .login form, .register form, .reset form, .sub_blog, .update_profile{
     text-align:right;
     margin-right: 300px;
@@ -271,7 +260,7 @@ input[type=reset]:hover{
     text-align: left;
 }
 .check_des > p > span {
-    font-weight: bold;
+    color: red;
 }
 #newCome, #invitation {
     visibility: hidden;
@@ -347,6 +336,50 @@ input[type=reset]:hover{
     width: 40px;
     height: 40px;
 }
+#game_container1 {
+    width: 1100px;
+    height: 70px;
+    position: relative;
+}
+#game_des {
+    position: relative;
+    width: 340px;
+}
+#game_description {
+    text-align: left;
+    position: relative;
+    width: 700px;
+    height: 80px;
+    margin-left: 650px;
+    margin-top: -75px;
+    font-size: 18px;
+}
+#color1 {
+    width: 150px;
+    height:  40px;
+}
+#color_bar {
+    margin: 0 80px 5px 30px;
+    font-size: 30px;
+}
+
+#game_left {
+    height: 60px;
+    width: 500px;
+}
+#game_instruction{
+    width: 520px;
+    height: 100px;
+    margin-top: -136px;
+    margin-left: 560px;
+    text-align: left;
+    background-color: white;
+    border: 1px solid #03a9f4;
+    border-radius: 10px;
+    box-shadow: 2px 5px 10px #03a9f4;
+    padding: 5px;
+}
+
 #drawBoard {
     background:white;
     border: 1px solid #03a9f4;
@@ -391,6 +424,7 @@ input[type=reset]:hover{
     text-align: left;
     padding: 0 150px;
     width: 800px;
+    font-size: 25px;
 }
 .reg_container, .reset_container {
     position: relative;
