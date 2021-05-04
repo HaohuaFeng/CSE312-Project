@@ -6,7 +6,6 @@ from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room, leave_room, send
 import base64
 from PIL import Image
-import sys
 import json
 
 # db = pymysql.connect(host='db', user='root', password=os.getenv(
@@ -84,7 +83,6 @@ def connect_handler():
             cur.execute(sql, (session['user'],))
             user = cur.fetchone()
             print(str(session['user']) + " connected")
-            sys.stdout.flush()
             emit('new_user', user, broadcast=True)
             if room in game_users:
                 emit('new_gamer', room, broadcast=True)
@@ -101,7 +99,6 @@ def disconnect_handler():
                 send(game_users, room=user)
 
         print(str(session['user']) + " disconnected")
-        sys.stdout.flush()
         online_users.remove(room)
         online_users.sort()
         users_login = list()
@@ -111,6 +108,8 @@ def disconnect_handler():
             temp['icon'] = users_icon[user]
             users_login.append(temp)
         if users_login:
+            # We convert the a list to JSON data
+            # https://www.w3schools.com/python/python_json.asp
             users_json = json.dumps(users_login)
             send(users_json, json=True, broadcast=True)
         else:
@@ -182,6 +181,8 @@ def login():
         else:
             return "<h1>Failed. The username: " + username + " or password incorrect.</h1>" + redirecting + rd_fail
     if 'user' in session:
+        # Use the combination of redirect and url_for functions to redirect to other page
+        # https://flask.palletsprojects.com/en/1.1.x/quickstart/
         return redirect(url_for('profile'))
     else:
         return render_template('login.html')
@@ -316,6 +317,11 @@ def profile():
         birth = request.form['birth']
         pp = request.form['personal_page']
         introduction = request.form['introduction']
+
+        # Read the bytes of the image from input file and store it locally
+        # Since the image may be very large, but the user icon does not need to be that big
+        # So we store use Image method from PIL library to reduce the size of image
+        # https://pillow.readthedocs.io/en/stable/reference/Image.html
         icon = request.files['icon']
         ic = icon.read()
         path = "static/images/" + icon.filename
@@ -324,12 +330,10 @@ def profile():
         fout.close()
         img = Image.open(path)
         img.thumbnail((400, 400))
-
         icon_name = 'icon_' + icon.filename
         img.save("static/images/" + icon_name)
-
         os.remove(path)
-        # print(email + " " + gender + " " + birth + " " + pp + " " + introduction + " " + icon.filename)
+
         sql = "update user set email=%s,icon=%s,gender=%s,birth=%s,personal_page=%s,introduction=%s where username=%s"
         cur.execute(sql, (email, icon_name, gender, birth, pp, introduction, session['user']))
         db.commit()
@@ -367,6 +371,8 @@ def profile():
 def directChat(send_to_user):
     if 'user' in session:
         if session['user'] == send_to_user:
+            # Use the combination of redirect and url_for functions to redirect to other page
+            # https://flask.palletsprojects.com/en/1.1.x/quickstart/
             return redirect(url_for("profile"))
 
         sender = session['user']
@@ -392,7 +398,8 @@ def handleMessage(msg):
         sql = "insert into message values (%s,%s,%s,%s);"
         cur.execute(sql, (sender, receiver, message,date))
         db.commit()
-
+        # use escape() to make the message safe
+        # https://flask.palletsprojects.com/en/1.1.x/quickstart/
         emit('privateMessage', {'sender': sender, 'receiver': receiver,
                                 'message': escape(message), 'date': date}, room=receiver)
 
@@ -409,6 +416,8 @@ def userProfile(look_user):
     if 'user' in session:
         user = session['user']
         if user == look_user:
+            # Use the combination of redirect and url_for functions to redirect to other page
+            # https://flask.palletsprojects.com/en/1.1.x/quickstart/
             return redirect(url_for('profile'))
         return render_template("user_profile.html", user=user, look_user=look_user1)
     else:
@@ -422,6 +431,8 @@ def check_user_exist():
     if len(username) == 0:
         result["exists"] = True
         result["display"] = "<font color='red'> ❌ Empty Username</font>"
+        # We convert the a list to JSON data
+        # https://flask.palletsprojects.com/en/1.1.x/quickstart/
         return jsonify(result)
     if username:
         if len(username) < 3:

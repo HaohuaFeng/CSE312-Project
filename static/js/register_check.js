@@ -11,6 +11,7 @@ function check_user(){
             type: "get",
             data: "",
             success: function (get_from_server) {
+                console.log(get_from_server);
                 if (get_from_server['exists']) {
                     username_check = false;
                     document.getElementById("display_exist").innerHTML = get_from_server['display'];
