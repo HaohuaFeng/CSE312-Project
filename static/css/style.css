@@ -260,7 +260,7 @@ input[type=reset]:hover{
     text-align: left;
 }
 .check_des > p > span {
-    color: red;
+    font-weight: bold;
 }
 #newCome, #invitation {
     visibility: hidden;
