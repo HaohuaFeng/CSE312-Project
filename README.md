@@ -1,5 +1,5 @@
 # CSE312-Project
-<h2>Welcome to FaceNote! My dear friend!</h2>
+<h2>Welcome to <b>FaceNote</b>! My dear friend!</h2>
 <p>FaceNote is a powerful web application. Not only can you use it to chat with your friends,
 you can also use it to play an interesting game with them. To enjoy all the functions of FaceNote,
 please log in first in the "Login" tab. Once you logged in, You can update your information so that
