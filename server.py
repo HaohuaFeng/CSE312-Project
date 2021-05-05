@@ -15,8 +15,8 @@ db = pymysql.connect(host='db', user='root', password=os.getenv(
 #                    cursorclass=pymysql.cursors.DictCursor)
 
 cur = db.cursor()
-# cur.execute("create database IF NOT EXISTS zhong")
-# cur.execute("use zhong")
+cur.execute("create database IF NOT EXISTS zhong")
+cur.execute("use zhong")
 cur.execute(
     "create table IF NOT EXISTS user(username varchar(200), email varchar(50), password varchar(500),icon varchar("
     "200) default 'fakeuser.png', gender varchar(10), birth varchar(20), personal_page varchar(100), introduction "
@@ -82,7 +82,6 @@ def connect_handler():
             sql = "select username, icon from user where username=(%s)"
             cur.execute(sql, (session['user'],))
             user = cur.fetchone()
-            print(str(session['user']) + " connected")
             emit('new_user', user, broadcast=True)
             if room in game_users:
                 emit('new_gamer', room, broadcast=True)
@@ -97,8 +96,6 @@ def disconnect_handler():
             game_users.remove(room)
             for user in game_users:
                 send(game_users, room=user)
-
-        print(str(session['user']) + " disconnected")
         online_users.remove(room)
         online_users.sort()
         users_login = list()
@@ -456,8 +453,11 @@ def check_user_exist():
 @app.route('/game.html')
 def gaming2():
     if 'user' in session:
+        game_users_before = []
+        for user in game_users:
+            game_users_before.append(user)
         game_users.append(session['user'])
-        return render_template("game.html", sender=session['user'], players=game_users)
+        return render_template("game.html", sender=session['user'], players=game_users_before)
     else:
         redirecting = '<h3>Redirecting ... </h3>'
         rd_fail = '<script>setTimeout(function(){window.location.href="/login.html";}, 3000);</script>'

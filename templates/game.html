@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-<!--        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>-->
-<!--    <script src="../static/js/default.js" charset="utf-8"></script>-->
 
 </head>
 <body>
@@ -151,10 +149,10 @@
     socket.on('new_gamer', function(user) {
         var users = document.getElementById('gamers');
         var all_users = users.innerHTML;
-        if (!all_users.includes(user)){
+<!--        if (!all_users.includes(user)){-->
             var new_user = '<a href="user_profile/' + user + '" class="profile">' + user + '</a><br>';
             users.innerHTML += new_user;
-        }
+<!--        }-->
     });
 
     socket.on('message', function(players) {

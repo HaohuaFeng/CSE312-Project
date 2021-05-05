@@ -6,14 +6,6 @@ function normal1(x) {
     x.src = 'static/images/msg1.png';
 }
 
-function change2(x) {
-    x.src = 'static/images/game2.png';
-}
-
-function normal2(x) {
-    x.src = 'static/images/game1.png';
-}
-
 $(document).ready(function() {
     var socket = io();
 
@@ -27,9 +19,6 @@ $(document).ready(function() {
             new_user += '&nbsp;&nbsp;&nbsp;';
             new_user += '<a href="direct_chat/' + users[i].username + ' " class="DM_icon"><img src="static/images/msg1.png" ' +
                         'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
-//            new_user += '&nbsp;&nbsp;&nbsp;';
-//            new_user += '<a href="game/' + users[i].username + '"><img src="static/images/game1.png" ' +
-//                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
             new_user += '<br/>';
 
             list.innerHTML += new_user;
@@ -39,19 +28,15 @@ $(document).ready(function() {
     socket.on('new_user', function(user) {
         var users = document.getElementById('current_users');
         var all_users = users.innerHTML;
-        if (!all_users.includes(user.username)){
+//        if (!all_users.includes(user.username)){
             var new_user = '<a href="user_profile/' + user.username + '" class="profile">'
             new_user += '<img src="static/images/' + user.icon + '" width=50/>' + user.username + '</a>';
             new_user += '&nbsp;&nbsp;&nbsp;';
             new_user += '<a href="direct_chat/' + user.username + '" class="DM_icon"><img src="static/images/msg1.png" ' +
                         'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
-//            new_user += '&nbsp;&nbsp;&nbsp;';
-//            new_user += '<a href="game/' + user.username + '"><img src="static/images/game1.png" ' +
-//                        'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a>
             new_user += '<br/>';
-
             users.innerHTML += new_user;
-        }
+//        }
     });
 
     socket.on('blog_done', function(record) {
@@ -116,36 +101,3 @@ $(document).ready(function() {
         }
     });
 });
-
-//getUsers();
-//setInterval (getUsers, 5000);
-//
-//function getUsers() {
-//    const request = new XMLHttpRequest();
-//    request.onreadystatechange = function () {
-//        if (this.readyState === 4 && this.status === 200) {
-//            renderUsers(this.response);
-//        }
-//    };
-//    request.open("GET", "get-users");
-//    request.send()
-//}
-//
-//function renderUsers(rawUsers) {
-//    let list = document.getElementById('current_users');
-//    list.innerHTML = "";
-//    var users = JSON.parse(rawUsers);
-//    for (i = 0; i < users.length; i++){
-//        var new_user = '<a href="user_profile/' + users[i].username + '" class="profile">'
-//        new_user += '<img src="static/images/' + users[i].icon + '" width=50/>' + users[i].username + '</a>';
-//        new_user += '&nbsp;&nbsp;&nbsp;';
-//        new_user += '<a href="direct_chat/' + users[i].username + '"><img src="static/images/msg1.png" ' +
-//                    'onmouseover="change1(this)" onmouseout="normal1(this)" class="mini_icon"/></a>';
-//        new_user += '&nbsp;&nbsp;&nbsp;';
-//        new_user += '<a href="game/' + users[i].username + '"><img src="static/images/game1.png" ' +
-//                    'onmouseover="change2(this)" onmouseout="normal2(this)" class="mini_icon"/></a><br/>';
-//
-//        list.innerHTML += new_user;
-//    }
-//}
-
