@@ -7,8 +7,7 @@ function normal1(x) {
 }
 
 $(document).ready(function() {
-    var socket = io();
-
+      var socket = io();
     socket.on('json', function(users_json) {
         var list = document.getElementById('current_users');
         list.innerHTML = "";

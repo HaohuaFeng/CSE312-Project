@@ -3,3 +3,4 @@ PyMySql==0.9.3
 flask-socketio
 bcrypt
 pillow
+eventlet
