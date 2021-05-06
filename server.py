@@ -328,7 +328,7 @@ def profile():
         img.thumbnail((400, 400))
         icon_name = 'icon_' + icon.filename
         img.save("static/images/" + icon_name)
-        os.remove(path)
+        # os.remove(path)
 
         sql = "update user set email=%s,icon=%s,gender=%s,birth=%s,personal_page=%s,introduction=%s where username=%s"
         cur.execute(sql, (email, icon_name, gender, birth, pp, introduction, session['user']))
