@@ -287,10 +287,12 @@ def register():
         regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         pattern = re.compile(regex)
         validation = re.search(pattern, password)
-        if password != password_check and validation:
+        if password != password_check:
             return "<h1>Fail to register，two passwords don't match.</h1>" + redirecting + rd_fail
         elif ex == 0:
             return "<h1>Fail to register，username \"" + username + "\" existed.</h1>" + redirecting + rd_fail
+        if validation:
+            return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
 
         # 新用户添加到database
         salt = bcrypt.gensalt()
