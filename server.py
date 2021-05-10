@@ -284,13 +284,13 @@ def register():
         rd_suc2 = '<script>setTimeout(function(){window.location.href="/index.html";}, 3000);</script>'
         if name is None:
             ex = 1
-        regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
-        pattern = re.compile(regex)
-        validation = re.search(pattern, password)
         if password != password_check:
             return "<h1>Fail to register，two passwords don't match.</h1>" + redirecting + rd_fail
         elif ex == 0:
             return "<h1>Fail to register，username \"" + username + "\" existed.</h1>" + redirecting + rd_fail
+        regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
+        pattern = re.compile(regex)
+        validation = re.search(pattern, password)
         if not validation:
             return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
 
