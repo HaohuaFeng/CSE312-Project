@@ -203,6 +203,11 @@ def reset():
             return "<h1>This username does not exist!</h1>" + redirecting + rd_fail
         if new_password != cnew_password:
             return "<h1>The new passwords are not same!</h1>" + redirecting + rd_fail
+        regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
+        pattern = re.compile(regex)
+        validation = re.search(pattern, new_password)
+        if not validation:
+            return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
 
         if bcrypt.checkpw(old_password.encode(), name['password'].encode()):
             salt = bcrypt.gensalt()
@@ -288,6 +293,7 @@ def register():
             return "<h1>Fail to register，two passwords don't match.</h1>" + redirecting + rd_fail
         elif ex == 0:
             return "<h1>Fail to register，username \"" + username + "\" existed.</h1>" + redirecting + rd_fail
+
         regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         pattern = re.compile(regex)
         validation = re.search(pattern, password)
