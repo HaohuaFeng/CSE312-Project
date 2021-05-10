@@ -11,7 +11,7 @@ from PIL import Image
 import json
 
 db = pymysql.connect(host='db', user='root', password=os.getenv(
-     'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+    'MYSQL_PASSWORD'), db='zhong', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
 
 # db = pymysql.connect(host='localhost', user='root', password='sze111', charset='utf8mb4',
 #                    cursorclass=pymysql.cursors.DictCursor)
@@ -41,6 +41,7 @@ socketio = SocketIO(app)
 online_users = []
 users_icon = dict()
 game_users = []
+
 
 @app.before_request
 def advance_session_timeout():
@@ -207,7 +208,7 @@ def reset():
         pattern = re.compile(regex)
         validation = re.search(pattern, new_password)
         if not validation:
-            return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
+            return "<h1>Password requirements are not satisfied</h1>" + redirecting + rd_fail
 
         if bcrypt.checkpw(old_password.encode(), name['password'].encode()):
             salt = bcrypt.gensalt()
@@ -298,7 +299,7 @@ def register():
         pattern = re.compile(regex)
         validation = re.search(pattern, password)
         if not validation:
-            return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
+            return "<h1>Password requirements are not satisfied.</h1>" + redirecting + rd_fail
 
         # 新用户添加到database
         salt = bcrypt.gensalt()
@@ -405,7 +406,7 @@ def handleMessage(msg):
         now = datetime.now()
         date = now.strftime("%m/%d/%Y %H:%M:%S")
         sql = "insert into message values (%s,%s,%s,%s);"
-        cur.execute(sql, (sender, receiver, message,date))
+        cur.execute(sql, (sender, receiver, message, date))
         db.commit()
         # use escape() to make the message safe
         # https://flask.palletsprojects.com/en/1.1.x/quickstart/
