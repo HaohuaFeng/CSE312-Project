@@ -291,7 +291,7 @@ def register():
             return "<h1>Fail to register，two passwords don't match.</h1>" + redirecting + rd_fail
         elif ex == 0:
             return "<h1>Fail to register，username \"" + username + "\" existed.</h1>" + redirecting + rd_fail
-        if validation:
+        if not validation:
             return "<h1>password requirement not meet.</h1>" + redirecting + rd_fail
 
         # 新用户添加到database
